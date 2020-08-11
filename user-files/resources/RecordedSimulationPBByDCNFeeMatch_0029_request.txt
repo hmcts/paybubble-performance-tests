@@ -1,1 +1,0 @@
-{"payment_allocation_status":{"description":"","name":"Allocated"},"payment_group_reference":"2020-1596027695733","payment_reference":"RC-1596-0277-1339-5482","reason":null,"explanation":null,"user_name":null}

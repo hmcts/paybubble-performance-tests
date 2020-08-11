@@ -1,1 +1,0 @@
-{"payment_allocation_status":{"description":"","name":"Allocated"},"payment_group_reference":"2020-1596037820574","payment_reference":"RC-1596-0378-6342-8124","reason":"Other","explanation":"I have put a stop on the case.  The applicant needs to be contacted to request the balance of payment","user_name":"Vijay"}

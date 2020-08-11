@@ -1,1 +1,0 @@
-{"payment_allocation_status":{"description":"","name":"Allocated"},"payment_group_reference":"2020-1596037251568","payment_reference":"RC-1596-0373-4398-3482","reason":"Other","explanation":"Details in case notes.  Refund due","user_name":"vijay"}

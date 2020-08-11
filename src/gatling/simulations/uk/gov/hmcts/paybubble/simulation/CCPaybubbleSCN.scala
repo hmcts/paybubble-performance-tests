@@ -19,11 +19,11 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
-		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 	val bulkscanhttpProtocol = http
 										 .baseUrl(bulkScanUrl)
-										// .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+										 .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 
   val createS2S_Scn = scenario("Create Bundling For IAC ")
