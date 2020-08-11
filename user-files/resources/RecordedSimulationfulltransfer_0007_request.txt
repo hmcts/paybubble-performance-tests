@@ -1,0 +1,1 @@
+{"payment_allocation_status":{"description":"","name":"Transferred"},"payment_group_reference":"2020-1596039856016","payment_reference":"RC-1596-0398-5600-5646","unidentified_reason":"sdsdsdsdsdsdsdsdsdsdsdsds","receiving_office":"P219","receiving_email_address":"","sending_email_address":""}

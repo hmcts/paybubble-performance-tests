@@ -1,0 +1,1 @@
+{"fees":[{"code":"FEE0007","version":"3","calculated_amount":"200","memo_line":"XXX","natural_account_code":"XXX","ccd_case_number":"1591283453603826","jurisdiction1":"family","jurisdiction2":"family court","description":"Where the party filing the request is legally aided","volume":1,"fee_amount":"200"}]}
