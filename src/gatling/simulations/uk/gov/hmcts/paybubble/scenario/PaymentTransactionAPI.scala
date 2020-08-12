@@ -39,7 +39,7 @@ val paymentAPIURL=Environment.paymentAPIURL
     )
     ).asJson
     .check(status is 201))
-      .pause(190)
+      .pause(188)
 
 
 
@@ -56,7 +56,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                  )
                  ).asJson
                  .check(status is 201))
-            .pause(17)
+            .pause(16)
 
   val telephony = exec(http("PaymentAPI${service}_040_TelePayments")
                            .post("/payment-groups/${paymentgroupref}/card-payments")
@@ -98,7 +98,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                       )
                       ).asJson
                       .check(status is 201))
-                 .pause(50)
+                 .pause(58)
 
   val getPaymentReferenceByCase = exec(http("PaymentAPI${service}_030_PayRefByCase")
                             .get("/cases/${caseid}/payments")
@@ -110,7 +110,7 @@ val paymentAPIURL=Environment.paymentAPIURL
     .check(jsonPath("$..payment_reference").saveAs("paymentreference"))
 
   )
-                       .pause(3)
+                       .pause(2)
 
   val getPaymentGroupReferenceByCase = exec(http("PaymentAPI${service}_040_CCDViewPayment")
                                  .get("/cases/${caseid}/paymentgroups")
@@ -128,5 +128,5 @@ val paymentAPIURL=Environment.paymentAPIURL
                            .header("Content-Type", "application/json")
                             .header("accept", "*/*")
                            .check(status in (200,201)))
-                      .pause(10)
+                      //.pause(10)
 }

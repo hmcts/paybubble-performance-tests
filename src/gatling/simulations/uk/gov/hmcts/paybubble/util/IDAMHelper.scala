@@ -40,7 +40,7 @@ object IDAMHelper {
                          .header("Content-Length", "0")
                          .check(status is 302)
                          .check(headerRegex("Location", "(?<=code=)(.*)(?=&client_id)").saveAs("serviceauthcode")))
-                      .pause(10)
+                      .pause(4)
                   }
 
     .doIf(session => session.contains("serviceauthcode")) {
@@ -51,7 +51,7 @@ object IDAMHelper {
          .check(status is 200)
          .check(jsonPath("$.access_token").saveAs("accessToken")))
   }
-    .pause(5)
+    .pause(4)
 
 
 

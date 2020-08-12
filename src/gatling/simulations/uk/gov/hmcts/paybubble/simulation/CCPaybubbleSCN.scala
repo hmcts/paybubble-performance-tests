@@ -19,11 +19,11 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
-		.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 	val bulkscanhttpProtocol = http
 										 .baseUrl(bulkScanUrl)
-										 .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+										 //.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 
   val createS2S_Scn = scenario("Create Bundling For IAC ")
@@ -41,7 +41,7 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 	val telephony_Scn = scenario("Offline Telephony Payments Scenario ")
 	  	.repeat(3) {//40
 				feed(feedertelephone).feed(Feeders.TelephoneFeeder).exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
-			  	.pause(1000)
+			  	.pause(1036)
 			}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
@@ -61,7 +61,7 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 
 			}
 
-	val CCDViewPayment_Scn = scenario("Pay By Account Scenario ")
+	val CCDViewPayment_Scn = scenario("View Payments Scenario ")
 	  	.repeat(271) {//271
 				feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentReferenceByCase).exec(PaymentTransactionAPI.ccdViewPayment)
 			}
@@ -90,4 +90,12 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 		PBA_Scn.inject(atOnceUsers(1)),
 		CCDViewPayment_Scn.inject(atOnceUsers(1))
 	).protocols(httpProtocol)
+
+	/*setUp(
+	CCDViewPayment_Scn.inject(nothingFor(15),rampUsers(271) during (3400)),
+	onlinePayment_Scn.inject(nothingFor(25),rampUsers(130) during (3400)),
+		bulkscan_Scn.inject(nothingFor(35),rampUsers(20) during (3400)),
+		PBA_Scn.inject(nothingFor(45),rampUsers(18) during (3400)),
+		telephony_Scn.inject(nothingFor(55),rampUsers(3) during (3400)),
+	).protocols(httpProtocol)*/
 }

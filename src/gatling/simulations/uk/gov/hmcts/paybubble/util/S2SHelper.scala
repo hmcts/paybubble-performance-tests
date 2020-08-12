@@ -29,7 +29,7 @@ object  S2SHelper {
       )).asJson
       .check(bodyString.saveAs("s2sToken"))
       .check(bodyString.saveAs("responseBody")))
-    .pause(5)
+    .pause(4)
       /*.exec( session => {
         println("the code of id is "+session("s2sToken").as[String])
         session
