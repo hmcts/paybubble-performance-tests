@@ -19,11 +19,11 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
-		.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 	val bulkscanhttpProtocol = http
 										 .baseUrl(bulkScanUrl)
-										 .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+								  	//	 .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 
   val createS2S_Scn = scenario("Create Bundling For IAC ")
@@ -79,7 +79,7 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
   	.exec(PaymentByDCN.paymentProcess)
   	.exec(PaymentByDCN.PaymentProcessed)*/
 
-	setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)
+	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
 	//setUp(bulkscan_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)
 	//setUp(onlinePayment_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)
@@ -113,11 +113,11 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 		telephony_Scn.inject(nothingFor(55),rampUsers(3) during (3500))
 	).protocols(httpProtocol)*/
 
-  /*setUp(
+  setUp(
 	CCDViewPayment_Scn.inject(nothingFor(15),rampUsers(13000) during (3500)),
 	onlinePayment_Scn.inject(nothingFor(25),rampUsers(100) during (3500)),
 		bulkscan_Scn.inject(nothingFor(35),rampUsers(1099) during (3500)),
 		PBA_Scn.inject(nothingFor(45),rampUsers(79) during (3500)),
 		telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
-	).protocols(httpProtocol)*/
+	).protocols(httpProtocol)
 }
