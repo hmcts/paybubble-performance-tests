@@ -8,14 +8,14 @@ public class Env {
     static {
         defaults.setProperty("IDAM_API_BASE_URI", "https://idam-api.perftest.platform.hmcts.net");
         defaults.setProperty("IDAM_AUTH_REDIRECT", "https://paybubble.perftest.platform.hmcts.net/oauth2/callback");
-        defaults.setProperty("OAUTH_CLIENT", "paybubble");
+        defaults.setProperty("OAUTH_CLIENT", "paybubble");//am_role_assignment
         defaults.setProperty("FUNCTIONAL_TEST_CLIENT_OAUTH_SECRET", "evidence-management-show");
         defaults.setProperty("S2S_BASE_URI", "http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal/testing-support");
         defaults.setProperty("DM_STORE_API_BASE_URI", "http://dm-store-perftest.service.core-compute-perftest.internal");
         //defaults.setProperty("S2S_SERVICE_NAME", "api_gw");
-        defaults.setProperty("S2S_SERVICE_NAME", "probate_frontend");
+        defaults.setProperty("S2S_SERVICE_NAME", "probate_frontend");//am_role_assignment_service
         defaults.setProperty("IDAM_OAUTH_SECRET", "NVYEC2X7XFSRENTU");
-        defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", "ZTUJMGDXR4ATXB4O");
+        defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", "ZTUJMGDXR4ATXB4O");//PVHJTPD552HUVO5G
     }
 
     public static String require(String name) {

@@ -53,6 +53,16 @@ object IDAMHelper {
   }
     .pause(10)
 
+  //following is a tested method
+
+  val getIdamTokenLatest=
+    exec(http("PaymentAPI${service}_010_015_GetAuthToken")
+         .post(Env.getIdamUrl  + "/o/token?client_id="+Env.getOAuthClient()+"&client_secret="+Env.getOAuthSecret()+"grant_type=password&scope=search-user&username=befta.caseworker.2.solicitor.2@gmail.com&password=PesZvqrb78")
+         .header("Content-Type", "application/x-www-form-urlencoded")
+         .header("Content-Length", "0")
+         .check(status is 200)
+         .check(jsonPath("$.access_token").saveAs("accessToken")))
+
 
 
 }
