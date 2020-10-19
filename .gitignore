@@ -8,3 +8,4 @@ target/**
 build/**
 *.log
 *.zip
+src/gatling/resources/application.conf

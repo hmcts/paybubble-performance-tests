@@ -9,15 +9,15 @@ apply plugin: 'scala'
 group 'uk.gov.hmcts.reform'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "11"
+targetCompatibility = "11"
 
 repositories {
     mavenCentral()
 }
 
 ext {
-    gatlingVersion = '3.1.1'
+    gatlingVersion = '3.2.0'
     scalaVersion = '2.12.8'
 }
 
@@ -25,12 +25,10 @@ dependencies {
     compile 'org.scala-lang:scala-library:2.12.8'
 
     //compile group: 'com.warrenstrange', name: 'googleauth', version: '1.2.0'
-    compile group: 'io.gatling', name: 'gatling-app', version: '3.1.1'
+    compile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
     compile group: 'org.json', name: 'json' , version: '20180813'
-
-    compile group: 'io.gatling', name: 'gatling-recorder', version: '3.1.1'
-    compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '3.1.1'
-
+    compile group: 'io.gatling', name: 'gatling-recorder', version: gatlingVersion
+    compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
     compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
     compile group: 'org.springframework', name: 'spring-web', version: '5.1.5.RELEASE'
     gatlingCompile 'com.warrenstrange:googleauth:1.2.0'
@@ -48,7 +46,7 @@ jar {
 }
 
 gatling {
-    toolVersion = '3.1.1'
+    toolVersion = gatlingVersion
     scalaVersion = '2.12.8'
     simulations = [
             'uk.gov.hmcts.paybubble.simulation.CCPaybubbleSCN'

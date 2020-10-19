@@ -25,9 +25,6 @@ val paymentAPIURL=Environment.paymentAPIURL
     )
     .pause(10)
 
-
-
-
   val PBA = exec(http("PaymentAPI${service}_030_PayByAccounts")
     .post("/credit-account-payments")
     .header("Authorization", " ${accessToken}")
@@ -40,8 +37,6 @@ val paymentAPIURL=Environment.paymentAPIURL
     ).asJson
     .check(status is 201))
       .pause(10)
-
-
 
   val onlinePayment = exec(http("PaymentAPI${service}_030_OnlinePayments")
                  .post("/card-payments")

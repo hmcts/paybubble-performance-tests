@@ -5,6 +5,8 @@ import io.gatling.http.Predef._
 
 object IDAMHelper {
 
+  val config: Config = ConfigFactory.load()
+
  /* private val USERNAME = "testytesttest@test.net"
   private val PASSWORD = "4590fgvhbfgbDdffm3lk4j"*/
 // private val USERNAME = "james@swansea.gov.uk"
@@ -19,8 +21,6 @@ object IDAMHelper {
 
 
   val thinktime = Environment.thinkTime
-
-
 
   val getIdamToken = exec(http("PaymentAPI${service}_010_005_GetAuthCookie")
                        .post(Env.getIdamUrl + "/authenticate")

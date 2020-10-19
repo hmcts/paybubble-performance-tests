@@ -5,6 +5,8 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
 object  S2SHelper {
+
+  val config: Config = ConfigFactory.load()
   val thinktime = 5
 
   val getOTP =
@@ -23,7 +25,7 @@ object  S2SHelper {
       .post(Env.getS2sUrl+"/lease")
       .header("Content-Type", "application/json")
       .body(StringBody(
-        s"""{
+        """{
        "microservice": "${Env.getS2sMicroservice}"
         }"""
       )).asJson
