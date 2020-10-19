@@ -13,7 +13,7 @@ properties([
 @Library("Infrastructure") 
 
 def product = "paybubble"
-def component = "ccpaybubble-ui"
+def component = "ccpaybubble"
 
 def secrets = [
     'ccpay-aat': [
