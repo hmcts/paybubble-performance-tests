@@ -1,6 +1,9 @@
-package uk.gov.hmcts.paybubble.util
+package uk.gov.hmcts.paybubble.scenario.util
+
+import uk.gov.hmcts.paybubble.scenario.util._
 
 object CommonHeader {
+
  val baseURL = Environment.baseURL
  val IdamUrl = Environment.idamURL
 

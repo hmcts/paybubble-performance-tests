@@ -3,81 +3,94 @@ package uk.gov.hmcts.paybubble.simulation
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, PayBubbleLogin, PaymentTransactionAPI}
-import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
+import uk.gov.hmcts.paybubble.scenario.util._
+import com.typesafe.config.{Config, ConfigFactory}
 
 class CCPaybubbleSCN extends Simulation {
+
+	val config: Config = ConfigFactory.load()
 
 	val idamUrl = Environment.idamURL
 	val baseURL=Environment.baseURL
 	val bulkScanUrl=Environment.bulkScanURL
 	val paymentAPIURL=Environment.paymentAPIURL
-val feeder =jsonFile("datagenforbulkscan.json").circular
+	val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederonline =jsonFile("dataonlinepayment.json").circular
 	val feederbulkscan =jsonFile("databulkscanpayments.json").circular
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
+	
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
-		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 	val bulkscanhttpProtocol = http
-										 .baseUrl(bulkScanUrl)
-								  	//	 .proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		.baseUrl(bulkScanUrl)
+		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 
-  val createS2S_Scn = scenario("Create Bundling For IAC ")
+  	val createS2S_Scn = scenario("Create Bundling For IAC ")
 		.exec(S2SHelper.getOTP)
 		.exec(S2SHelper.S2SAuthToken)
 
 	val datagendcn_Scn = scenario("Data Gen DCN ")
 		.feed(feeder).feed(Feeders.DataGenBulkScanFeeder)
 	  	.repeat(1) {
-			  	exec(S2SHelper.S2SAuthToken)
-				  	.exec(DCNGenerator.generateDCN)
+			exec(S2SHelper.S2SAuthToken)
+			.exec(DCNGenerator.generateDCN)
 			}
 
 	val telephony_Scn = scenario("Offline Telephony Payments Scenario ")
-  	.feed(feedertelephone).feed(Feeders.TelephoneFeeder)
+  		.feed(feedertelephone).feed(Feeders.TelephoneFeeder)
 	  	.repeat(1) {//40
-				exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
-			  	.pause(10)
+			exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
+			.pause(10)
 			}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
-  	.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
+  		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
 	  	.repeat(1) {//74
-				exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.bulkscan).exec(PaymentTransactionAPI.paymentAllocations)
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.getPaymentGroupReference)
+			.exec(PaymentTransactionAPI.bulkscan)
+			.exec(PaymentTransactionAPI.paymentAllocations)
 			}
 
 	val onlinePayment_Scn = scenario("Online Payments Scenario ")
-  	.feed(feederonline).feed(Feeders.OnlinePaymentFeeder)
+  		.feed(feederonline).feed(Feeders.OnlinePaymentFeeder)
 	  	.repeat(1) {//200
-			exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.onlinePayment)
-
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.onlinePayment)
 			}
 
 	val PBA_Scn = scenario("Pay By Account Scenario ")
-  	.feed(feederpba).feed(Feeders.PBAFeeder)
+  		.feed(feederpba).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
-				exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.PBA)
-
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.PBA)
 			}
 
 	val CCDViewPayment_Scn = scenario("View Payments Scenario ")
-  	.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
+  		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
 	  	.repeat(1) {//271
-				exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentReferenceByCase).exec(PaymentTransactionAPI.ccdViewPayment)
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
+			.exec(PaymentTransactionAPI.ccdViewPayment)
 			}
 
 	val processpaymentmatch_Scn = scenario("Payment Transaction ")
 		.feed(feeder)
-  	.exec(PayBubbleLogin.homePage)
-  	.exec(PayBubbleLogin.login)
-  	/*.exec(PaymentByDCN.searchByDCN)
-  	.exec(PaymentByDCN.searchAndAddFee)
-  	.exec(PaymentByDCN.paymentProcess)
-  	.exec(PaymentByDCN.PaymentProcessed)*/
+  		.exec(PayBubbleLogin.homePage)
+  		.exec(PayBubbleLogin.login)
+		/*.exec(PaymentByDCN.searchByDCN)
+		.exec(PaymentByDCN.searchAndAddFee)
+		.exec(PaymentByDCN.paymentProcess)
+		.exec(PaymentByDCN.PaymentProcessed)*/
 
 	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
@@ -95,17 +108,15 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 	//	CCDViewPayment_Scn.inject(atOnceUsers(1))
 	).protocols(httpProtocol)*/
 
-  /*setUp(
+  	/*setUp(
     telephony_Scn.inject(nothingFor(1),rampUsers(1) during (1))
     /*onlinePayment_Scn.inject(nothingFor(25),rampUsers(130) during (3500)),
     bulkscan_Scn.inject(nothingFor(35),rampUsers(20) during (3500)),
     PBA_Scn.inject(nothingFor(45),rampUsers(18) during (3500)),
     telephony_Scn.inject(nothingFor(55),rampUsers(3) during (3500))*/
-  ).protocols(httpProtocol)*/
+  	).protocols(httpProtocol)*/
 
-
-
-/*setUp(
+	/*setUp(
 	CCDViewPayment_Scn.inject(nothingFor(15),rampUsers(4200) during (3500)),
 	onlinePayment_Scn.inject(nothingFor(25),rampUsers(130) during (3500)),
 		bulkscan_Scn.inject(nothingFor(35),rampUsers(20) during (3500)),
@@ -113,11 +124,11 @@ val feeder =jsonFile("datagenforbulkscan.json").circular
 		telephony_Scn.inject(nothingFor(55),rampUsers(3) during (3500))
 	).protocols(httpProtocol)*/
 
-  setUp(
-	CCDViewPayment_Scn.inject(nothingFor(15),rampUsers(13000) during (3500)),
-	onlinePayment_Scn.inject(nothingFor(25),rampUsers(100) during (3500)),
-		bulkscan_Scn.inject(nothingFor(35),rampUsers(1099) during (3500)),
-		PBA_Scn.inject(nothingFor(45),rampUsers(79) during (3500)),
-		telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
+  	setUp(
+	CCDViewPayment_Scn.inject(rampUsers(1) during (1))
+	// onlinePayment_Scn.inject(nothingFor(25),rampUsers(100) during (3500)),
+	// bulkscan_Scn.inject(nothingFor(35),rampUsers(1099) during (3500)),
+	// PBA_Scn.inject(nothingFor(45),rampUsers(79) during (3500)),
+	// telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)
 }

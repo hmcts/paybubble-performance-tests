@@ -3,7 +3,7 @@ package uk.gov.hmcts.paybubble.scenario
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.util.Environment
+import uk.gov.hmcts.paybubble.scenario.util.Environment
 
 object PaymentByDCN {
 
