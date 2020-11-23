@@ -27,17 +27,17 @@ ext {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.12.8'
+    //compile 'org.scala-lang:scala-library:2.12.8'
 
     //compile group: 'com.warrenstrange', name: 'googleauth', version: '1.2.0'
-    compile group: 'io.gatling', name: 'gatling-app', version: '3.1.1'
-    compile group: 'org.json', name: 'json' , version: '20180813'
+    //compile group: 'io.gatling', name: 'gatling-app', version: '3.1.1'
+    //compile group: 'org.json', name: 'json' , version: '20180813'
 
-    compile group: 'io.gatling', name: 'gatling-recorder', version: '3.1.1'
-    compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '3.1.1'
+    //compile group: 'io.gatling', name: 'gatling-recorder', version: '3.1.1'
+    //compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '3.1.1'
 
-    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
-    compile group: 'org.springframework', name: 'spring-web', version: '5.1.5.RELEASE'
+    //compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
+    //compile group: 'org.springframework', name: 'spring-web', version: '5.1.5.RELEASE'
     gatlingCompile 'com.warrenstrange:googleauth:1.2.0'
 }
 
