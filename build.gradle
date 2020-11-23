@@ -60,3 +60,18 @@ gatling {
     ]
 }
 
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+    dependsOn("publishToMavenLocal")
+    systemProperty "com.github.lkishalmi.gatling.version", project.version
+}
+
+pluginBundle {
+    website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
+    vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
+    description = 'Gatling Simulation Execution'
+    tags = ['gatling', 'load test', 'stress test', 'performance test', 'scala']
+}
+
