@@ -38,6 +38,7 @@ withNightlyPipeline("java", product, component) {
     env.BaseURL = 'https://ccpay-bubble-frontend-aat.service.core-compute-aat.internal'
     env.IDAM_URL = 'https://idam-web-public.aat.platform.hmcts.net/login'
 
+    loadVaultSecrets(secrets)
     enablePerformanceTest()
 
     after('performanceTest') {
