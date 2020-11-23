@@ -17,7 +17,7 @@ def secrets = [
     'ccpay-aat': [
         secret('payment-s2s-secret', 'S2S_SECRET')
     ],
-    'rd-aat': [
+    'ccpay-aat': [
         secret('OAUTH2-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
     ]
 ]
