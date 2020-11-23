@@ -44,14 +44,14 @@ class CCPaybubbleSCN extends Simulation {
 	val telephony_Scn = scenario("Offline Telephony Payments Scenario ")
   		.feed(feedertelephone).feed(Feeders.TelephoneFeeder)
 	  	.repeat(1) {//40
-			exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
+			exec(IDAMHelper.getIdamTokenLatest).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
 			.pause(10)
 			}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
   		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
 	  	.repeat(1) {//74
-			exec(IDAMHelper.getIdamToken)
+			exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentGroupReference)
 			.exec(PaymentTransactionAPI.bulkscan)
@@ -61,7 +61,7 @@ class CCPaybubbleSCN extends Simulation {
 	val onlinePayment_Scn = scenario("Online Payments Scenario ")
   		.feed(feederonline).feed(Feeders.OnlinePaymentFeeder)
 	  	.repeat(1) {//200
-			exec(IDAMHelper.getIdamToken)
+			exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.onlinePayment)
 			}
@@ -69,7 +69,7 @@ class CCPaybubbleSCN extends Simulation {
 	val PBA_Scn = scenario("Pay By Account Scenario ")
   		.feed(feederpba).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
-			exec(IDAMHelper.getIdamToken)
+			exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.PBA)
 			}
@@ -77,7 +77,7 @@ class CCPaybubbleSCN extends Simulation {
 	val CCDViewPayment_Scn = scenario("View Payments Scenario ")
   		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
 	  	.repeat(1) {//271
-			exec(IDAMHelper.getIdamToken)
+			exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
 			.exec(PaymentTransactionAPI.ccdViewPayment)
