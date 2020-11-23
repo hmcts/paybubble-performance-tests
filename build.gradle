@@ -1,6 +1,11 @@
 plugins {
+    id 'uk.gov.hmcts.java' version '0.12.0'
+    id 'scala'
     id 'com.github.lkishalmi.gatling' version '3.0.2'
-    id "org.owasp.dependencycheck" version "5.2.1"
+//    id 'java-gradle-plugin'
+    id 'groovy'
+    id 'com.gradle.plugin-publish' version '0.12.0'
+    id 'maven-publish'
 }
 
 apply plugin: 'com.github.lkishalmi.gatling'
