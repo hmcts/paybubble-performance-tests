@@ -23,8 +23,8 @@ object Environment {
   val DM_STORE_API_BASE_URI = "http://dm-store-aat.service.core-compute-aat.internal"
   //val S2S_SERVICE_NAME = "api_gw"
   val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service
-  val IDAM_OAUTH_SECRET = config.getString("IDAM_OAUTH_SECRET")
-  val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = config.getString("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN") //PVHJTPD552HUVO5G
+  val IDAM_OAUTH_SECRET = config.getString("auth.clientSecret")
+  val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = config.getString("aat_service.pass")
 
   val thinkTime = 1
 
