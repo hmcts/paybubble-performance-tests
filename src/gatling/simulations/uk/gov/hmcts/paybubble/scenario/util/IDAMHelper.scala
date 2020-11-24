@@ -53,7 +53,7 @@ object IDAMHelper {
 
   val getIdamTokenLatest=
     exec(http("PaymentAPI${service}_010_015_GetAuthToken")
-      .post(Environment.IDAM_API_BASE_URI  + "/o/token?client_id="+Environment.OAUTH_CLIENT+"&client_secret="+Environment.IDAM_OAUTH_SECRET+"grant_type=password&scope=search-user&username=befta.caseworker.2.solicitor.2@gmail.com&password=PesZvqrb78")
+      .post(Environment.IDAM_API_BASE_URI  + "/o/token?client_id="+Environment.OAUTH_CLIENT+"&client_secret="+Environment.IDAM_OAUTH_SECRET+"&grant_type=password&scope=search-user&username=befta.caseworker.2.solicitor.2@gmail.com&password=PesZvqrb78")
       .header("Content-Type", "application/x-www-form-urlencoded")
       .header("Content-Length", "0")
       .check(status is 200)
