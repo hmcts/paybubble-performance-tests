@@ -18,7 +18,7 @@ def secrets = [
         secret('payment-s2s-secret', 'S2S_SECRET')
     ],
     'ccpay-aat': [
-        secret('OAUTH2-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
+        secret('paybubble-idam-client-secret', 'OAUTH2_CLIENT_SECRET')
     ]
 ]
 
