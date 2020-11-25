@@ -125,10 +125,10 @@ class CCPaybubbleSCN extends Simulation {
 	).protocols(httpProtocol)*/
 
   	setUp(
-	CCDViewPayment_Scn.inject(rampUsers(10) during (10)),
-	onlinePayment_Scn.inject(rampUsers(10) during (10)),
-	bulkscan_Scn.inject(rampUsers(10) during (10)),
-	PBA_Scn.inject(rampUsers(10) during (10)),
-	telephony_Scn.inject(rampUsers(10) during (10))
+	CCDViewPayment_Scn.inject(rampUsers(10) during (300)),
+	onlinePayment_Scn.inject(rampUsers(10) during (300)),
+	bulkscan_Scn.inject(rampUsers(10) during (300)),
+	PBA_Scn.inject(rampUsers(10) during (300)),
+	telephony_Scn.inject(rampUsers(10) during (300))
 	).protocols(httpProtocol)
 }
