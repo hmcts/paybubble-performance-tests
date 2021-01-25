@@ -2,12 +2,10 @@ package uk.gov.hmcts.paybubble.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, PayBubbleLogin, PaymentTransactionAPI}
+import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, PCIPALRecording, PayBubbleLogin, PaymentTransactionAPI}
 import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
 
 class CCPaybubbleSCN extends Simulation {
-
-	val config: Config = ConfigFactory.load()
 
 	val idamUrl = Environment.idamURL
 	val baseURL=Environment.baseURL
@@ -28,8 +26,11 @@ class CCPaybubbleSCN extends Simulation {
 		.baseUrl(bulkScanUrl)
 		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
+	val baseProtocol = http
+		.baseUrl(baseURL)
+		//.inferHtmlResources()
 
-  	val createS2S_Scn = scenario("Create Bundling For IAC ")
+	val createS2S_Scn = scenario("Create Bundling For IAC ")
 		.exec(S2SHelper.getOTP)
 		.exec(S2SHelper.S2SAuthToken)
 
@@ -46,6 +47,15 @@ class CCPaybubbleSCN extends Simulation {
 			exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
 			.pause(10)
 			}
+
+	val telephony_online_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
+	{  feed(Feeders.TelephoneOnlineFeeder)
+		.exec(IDAMHelper.getIdamTokenLatest)
+		.exec(PayBubbleLogin.homePage)
+		.exec(PayBubbleLogin.login)
+		//.exec(PCIPALRecording.telephonyOnlineScenario)
+		.exec(PayBubbleLogin.logout)
+	}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
   		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
@@ -123,11 +133,13 @@ class CCPaybubbleSCN extends Simulation {
 		telephony_Scn.inject(nothingFor(55),rampUsers(3) during (3500))
 	).protocols(httpProtocol)*/
 
-  	setUp(
+  	/*setUp(
 	CCDViewPayment_Scn.inject(nothingFor(15),rampUsers(13000) during (3500)),
 	onlinePayment_Scn.inject(nothingFor(25),rampUsers(100) during (3500)),
 	bulkscan_Scn.inject(nothingFor(35),rampUsers(1099) during (3500)),
 	PBA_Scn.inject(nothingFor(45),rampUsers(79) during (3500)),
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
-	).protocols(httpProtocol)
+	).protocols(httpProtocol)*/
+
+	setUp(telephony_online_Scn.inject(rampUsers(1) during(10))).protocols(baseProtocol)
 }

@@ -1,12 +1,13 @@
 package uk.gov.hmcts.paybubble.util;
 
 import java.util.Properties;
+import com.typesafe.config.ConfigFactory;
 
 public class Env {
     private static String file = "CV-CMC-GOR-ENG-0004-UI-Test.docx";
     static Properties defaults = new Properties();
     static {
-        defaults.setProperty("IDAM_API_BASE_URI", "https://idam-api.perftest.platform.hmcts.net");
+        defaults.setProperty("IDAM_API_BASE_URI", "https://idam-web-public.perftest.platform.hmcts.net");
         defaults.setProperty("IDAM_AUTH_REDIRECT", "https://paybubble.perftest.platform.hmcts.net/oauth2/callback");
         defaults.setProperty("OAUTH_CLIENT", "paybubble");//am_role_assignment
         defaults.setProperty("FUNCTIONAL_TEST_CLIENT_OAUTH_SECRET", "evidence-management-show");
@@ -14,10 +15,10 @@ public class Env {
         defaults.setProperty("DM_STORE_API_BASE_URI", "http://dm-store-perftest.service.core-compute-perftest.internal");
         //defaults.setProperty("S2S_SERVICE_NAME", "api_gw");
         defaults.setProperty("S2S_SERVICE_NAME", "probate_frontend");//am_role_assignment_service
-        //defaults.setProperty("IDAM_OAUTH_SECRET", "NVYEC2X7XFSRENTU");
-        defaults.setProperty("IDAM_OAUTH_SECRET", config.getString("IDAM_OAUTH_SECRET"));
-        //defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", "ZTUJMGDXR4ATXB4O");//PVHJTPD552HUVO5G
-        defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", config.getString("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN"));
+        defaults.setProperty("IDAM_OAUTH_SECRET", "");
+        //defaults.setProperty("IDAM_OAUTH_SECRET", ConfigFactory.load.getString("IDAM_OAUTH_SECRET"));
+        defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", "");
+        //defaults.setProperty("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN", ConfigFactory.load.getString("FUNCTIONAL_TEST_CLIENT_S2S_TOKEN"));
 
     }
 

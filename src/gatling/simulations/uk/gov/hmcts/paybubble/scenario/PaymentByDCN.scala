@@ -51,7 +51,7 @@ object PaymentByDCN {
     "sec-fetch-site" -> "cross-site")
 
   val headers_9 = Map(
-    "csrf-token" -> "${csrf1}",
+    "csrf-token" -> "${csrf}",
     "sec-fetch-dest" -> "empty",
     "sec-fetch-mode" -> "cors",
     "sec-fetch-site" -> "same-origin",
@@ -64,7 +64,7 @@ object PaymentByDCN {
 
   val headers_20 = Map(
     "content-type" -> "application/json",
-    "csrf-token" -> "${csrf1}",
+    "csrf-token" -> "${csrf}",
     "origin" -> baseURL,
     "sec-fetch-dest" -> "empty",
     "sec-fetch-mode" -> "cors",
@@ -73,7 +73,7 @@ object PaymentByDCN {
 
   val headers_27 = Map(
     "content-type" -> "text/plain",
-    "csrf-token" -> "${csrf1}",
+    "csrf-token" -> "${csrf}",
     "origin" -> baseURL,
     "sec-fetch-dest" -> "empty",
     "sec-fetch-mode" -> "cors",

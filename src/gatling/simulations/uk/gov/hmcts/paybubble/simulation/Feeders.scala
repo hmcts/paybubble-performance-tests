@@ -37,6 +37,14 @@ object Feeders {
     })
   ));
 
+  val TelephoneOnlineFeeder = Iterator.continually(Map("service" -> ({
+    "Telephony_Online"
+  }),
+    "SignoutNumber" -> ({
+      "200"
+    })
+  ));
+
   val PBAFeeder = Iterator.continually(Map("service" -> ({
     "PBA"
   }),

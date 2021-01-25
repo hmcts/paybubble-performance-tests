@@ -27,7 +27,7 @@ object PayBubbleLogin {
   val homePage =
 
 
-      exec(http("PayBubble_010_005_Homepage")
+      exec(http("Login_010_Homepage")
            .get("/")
         .headers(CommonHeader.headers_homepage)
              .check(CsrfCheck.save)
@@ -63,8 +63,8 @@ object PayBubbleLogin {
   //==================================================================================
 
   val login =
-  exec(http("Login")
-        .post(idamUrl + "${loginurl1}")
+  exec(http("Login_020_Login1")
+        .post(idamUrl + "${loginurl}")
        .headers(CommonHeader.headers_login)
     .formParam(csrfParameter, csrfTemplate)
         .formParam("username", "ccdloadtest1@gmail.com")
@@ -73,17 +73,21 @@ object PayBubbleLogin {
         .formParam("selfRegistrationEnabled", "false")
 
     .check(status.is(200))
-    .check(regex("""<meta name="csrf-token" content=(.*?)","><title>""").find(0).saveAs("csrf1"))
+    .check(CsrfCheck.save)
+    //.check(regex("""<meta name="csrf-token" content=(.*?)","><title>""").find(0).saveAs("csrf1"))
   )
 
+    //.exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
 
-    .exec(http("request_37")
+    .exec(http("Login_030_Login2")
   .get("/api/payment-history/bulk-scan-feature")
   .headers(CommonHeader.headers_bulkscanfeature))
 
-    .exec(http("request_38")
+    .exec(http("Login_040_Login3")
   .get("/api/payment-history/bulk-scan-feature")
   .headers(CommonHeader.headers_bulkscanfeature))
+
+    .exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
 
     .pause(MinThinkTime , MaxThinkTime)
 

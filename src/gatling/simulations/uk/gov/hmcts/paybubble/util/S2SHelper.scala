@@ -6,7 +6,6 @@ import io.gatling.http.Predef._
 
 object  S2SHelper {
 
-  val config: Config = ConfigFactory.load()
   val thinktime = 5
 
   val getOTP =

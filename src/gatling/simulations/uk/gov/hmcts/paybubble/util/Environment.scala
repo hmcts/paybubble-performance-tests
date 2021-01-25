@@ -7,6 +7,7 @@ object Environment {
   val baseURL = "https://paybubble.perftest.platform.hmcts.net"
  val bulkScanURL="http://ccpay-bulkscanning-api-perftest.service.core-compute-perftest.internal"
  val paymentAPIURL="http://payment-api-perftest.service.core-compute-perftest.internal"
+ val PCIPALURL = "https://euwest1.pcipalstaging.cloud"
   val adminUserAO = ""
   val adminPasswordAO = ""
 
