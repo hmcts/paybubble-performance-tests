@@ -5,6 +5,7 @@ import io.gatling.http.Predef._
 import uk.gov.hmcts.paybubble.scenario.check.CsrfCheck
 import uk.gov.hmcts.paybubble.scenario.check.CsrfCheck.{csrfParameter, csrfTemplate}
 import uk.gov.hmcts.paybubble.util.{CommonHeader, Environment}
+import java.lang._
 
 
 object PayBubbleLogin {
@@ -24,10 +25,11 @@ object PayBubbleLogin {
   //below requests are Homepage and relavant sub requests as part of the login submission
   //=====================================================================================
 
-  val homePage =
+  val homePage = {
 
 
-      exec(http("Login_010_Homepage")
+    group("PaymentAPI${service}_010_Homepage"){
+    exec(http("PaymentAPI${service}_010_Homepage")
            .get("/")
         .headers(CommonHeader.headers_homepage)
              .check(CsrfCheck.save)
@@ -37,7 +39,7 @@ object PayBubbleLogin {
            .check(css(".form-group>input[name='state']", "value").saveAs("state"))
            .check(css(".form-group>input[name='redirect_uri']", "value").saveAs("redirectUri"))*/
            /*.check(regex("""state="(.+?)"&amp;client_id="""").find(0).saveAs("stateid")))*/
-       .check(regex("""class="form" action="(.+?)" method="post"""").find(0).saveAs("loginurl"))
+       .check(regex("""class="form" action="(.+?)" method="post"""").find(0).transform(str => str.replace("&amp;", "&"))saveAs("loginurl"))
       )
 
  //.replace(")", ""))
@@ -46,7 +48,7 @@ object PayBubbleLogin {
    // .check(css("a:contains('forgotpassword')", "href").saveAs("computerURL")))
 
 
-    .pause( MinThinkTime, MaxThinkTime )
+    .pause( MinThinkTime, MaxThinkTime )}
 
    .exec( session => {
           println("csrf value "+session("csrf").as[String])
@@ -54,7 +56,7 @@ object PayBubbleLogin {
 //     session.set("activationLink", (pattern findFirstMatchIn session("loginurl").get).mkString.trim.replace("amp;", ""))
           session
         })
-
+  }
 
 
   //==================================================================================
@@ -63,7 +65,8 @@ object PayBubbleLogin {
   //==================================================================================
 
   val login =
-  exec(http("Login_020_Login1")
+  group("PaymentAPI${service}_020_Login1"){
+  exec(http("PaymentAPI${service}_020_Login1")
         .post(idamUrl + "${loginurl}")
        .headers(CommonHeader.headers_login)
     .formParam(csrfParameter, csrfTemplate)
@@ -71,34 +74,67 @@ object PayBubbleLogin {
         .formParam("password", "Password12")
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "false")
+        .formParam("_csrf", "${csrf}")
+
 
     .check(status.is(200))
-    .check(CsrfCheck.save)
+    //.check(CsrfCheck.save)
     //.check(regex("""<meta name="csrf-token" content=(.*?)","><title>""").find(0).saveAs("csrf1"))
-  )
+  )}
 
     //.exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
 
-    .exec(http("Login_030_Login2")
-  .get("/api/payment-history/bulk-scan-feature")
-  .headers(CommonHeader.headers_bulkscanfeature))
+    .group("PaymentAPI${service}_030_Login2"){
+    exec(http("PaymentAPI${service}_030_Login2")
+      .get("/api/payment-history/LD-feature?flag=apportion-feature")
+    .headers(CommonHeader.headers_bulkscanfeature))}
 
-    .exec(http("Login_040_Login3")
+    .group("PaymentAPI${service}_040_Login3"){
+      exec(http("PaymentAPI${service}_040_Login3")
+    .get("/api/payment-history/LD-feature?flag=FE-pcipal-old-feature")
+        .headers(CommonHeader.headers_bulkscanfeature))}
+
+    .group("PaymentAPI${service}_050_Login4"){
+      exec(http("PaymentAPI${service}_050_Login4")
+    .get("/api/payment-history/LD-feature?flag=FE-pcipal-antenna-feature")
+    .headers(CommonHeader.headers_bulkscanfeature))}
+
+    .group("PaymentAPI${service}_060_Login5"){
+      exec(http("PaymentAPI${service}_060_Login5")
+    .get("/api/payment-history/LD-feature?flag=bspayments-strategic")
+    .headers(CommonHeader.headers_bulkscanfeature))}
+
+    .group("PaymentAPI${service}_070_Login6"){
+      exec(http("PaymentAPI${service}_070_Login6")
+  .get("/api/payment-history/bulk-scan-feature")
+  .headers(CommonHeader.headers_bulkscanfeature))}
+
+    .group("PaymentAPI${service}_080_Login7"){
+      exec(http("PaymentAPI${service}_080_Login7")
   .get("/api/payment-history/bulk-scan-feature")
   .headers(CommonHeader.headers_bulkscanfeature)
       //.check(headerRegex("Set-Cookie","__auth-token=(.*)").saveAs("authToken"))
-    )
+    )}
 
       .exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
+    .exec(getCookieValue(CookieKey("_csrf").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("csrf")))
 
+
+    .exec( session => {
+      println("auth value "+session("authToken").as[String])
+        println("csrf value "+session("csrf").as[String]
+      )
+      session
+    })
     .pause(MinThinkTime , MaxThinkTime)
 
 
   val logout =
-  exec(http("Login_050_Logout")
+  group("PaymentAPI${service}_${SignoutNumber}_Logout"){
+    exec(http("PaymentAPI${service}_${SignoutNumber}_Logout")
         .get("/logout")
         .headers(CommonHeader.headers_logout)
-        .check(status.is(404)))
+        .check(status.is(404)))}
 
 
 }

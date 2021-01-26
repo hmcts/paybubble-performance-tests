@@ -28,7 +28,7 @@ class CCPaybubbleSCN extends Simulation {
 
 	val baseProtocol = http
 		.baseUrl(baseURL)
-		//.inferHtmlResources()
+		.inferHtmlResources()
 
 	val createS2S_Scn = scenario("Create Bundling For IAC ")
 		.exec(S2SHelper.getOTP)
@@ -50,7 +50,6 @@ class CCPaybubbleSCN extends Simulation {
 
 	val telephony_online_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
 	{  feed(Feeders.TelephoneOnlineFeeder)
-		.exec(IDAMHelper.getIdamTokenLatest)
 		.exec(PayBubbleLogin.homePage)
 		.exec(PayBubbleLogin.login)
 		.exec(PCIPALRecording.telephonyOnlineScenario)
