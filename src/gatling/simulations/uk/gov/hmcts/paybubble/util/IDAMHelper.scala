@@ -2,6 +2,7 @@ package uk.gov.hmcts.paybubble.util
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import uk.gov.hmcts.paybubble.util.Environment._
 
 object IDAMHelper {
 
@@ -55,7 +56,7 @@ object IDAMHelper {
 
   val getIdamTokenLatest=
     exec(http("Token_010_GetAuthToken")
-         .post(Env.getIdamUrl  + "/o/token?client_id="+Env.getOAuthClient()+"&client_secret="+Env.getOAuthSecret()+"&grant_type=password&scope=openid&username=kishanki@gmail.com&password=LevelAt12")
+         .post(idamURL  + "/o/token?client_id=" + OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid&username=kishanki@gmail.com&password=LevelAt12")
          .header("Content-Type", "application/x-www-form-urlencoded")
          .header("Content-Length", "0")
          .check(status is 200)

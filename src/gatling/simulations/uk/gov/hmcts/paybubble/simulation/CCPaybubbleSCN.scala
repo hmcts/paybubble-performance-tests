@@ -53,7 +53,7 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(IDAMHelper.getIdamTokenLatest)
 		.exec(PayBubbleLogin.homePage)
 		.exec(PayBubbleLogin.login)
-		//.exec(PCIPALRecording.telephonyOnlineScenario)
+		.exec(PCIPALRecording.telephonyOnlineScenario)
 		.exec(PayBubbleLogin.logout)
 	}
 

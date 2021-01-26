@@ -10,7 +10,6 @@ public class Env {
         defaults.setProperty("IDAM_API_BASE_URI", "https://idam-web-public.perftest.platform.hmcts.net");
         defaults.setProperty("IDAM_AUTH_REDIRECT", "https://paybubble.perftest.platform.hmcts.net/oauth2/callback");
         defaults.setProperty("OAUTH_CLIENT", "paybubble");//am_role_assignment
-        defaults.setProperty("FUNCTIONAL_TEST_CLIENT_OAUTH_SECRET", "evidence-management-show");
         defaults.setProperty("S2S_BASE_URI", "http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal/testing-support");
         defaults.setProperty("DM_STORE_API_BASE_URI", "http://dm-store-perftest.service.core-compute-perftest.internal");
         //defaults.setProperty("S2S_SERVICE_NAME", "api_gw");

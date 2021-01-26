@@ -3,6 +3,7 @@ package uk.gov.hmcts.paybubble.util
 import com.warrenstrange.googleauth.GoogleAuthenticator
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import uk.gov.hmcts.paybubble.util.Environment._
 
 object  S2SHelper {
 
@@ -11,7 +12,7 @@ object  S2SHelper {
   val getOTP =
   exec(
     session => {
-      val otp: String = String.valueOf(new GoogleAuthenticator().getTotpPassword(Env.getS2sSecret))
+      val otp: String = String.valueOf(new GoogleAuthenticator().getTotpPassword(FUNCTIONAL_TEST_CLIENT_S2S_TOKEN))
       session.set("OTP", otp)
 
     })
@@ -21,11 +22,11 @@ object  S2SHelper {
   val S2SAuthToken =
 
     exec(http("PaymentAPI${service}_020_GetServiceToken")
-      .post(Env.getS2sUrl+"/lease")
+      .post(S2S_BASE_URI + "/lease")
       .header("Content-Type", "application/json")
       .body(StringBody(
-        """{
-       "microservice": "${Env.getS2sMicroservice}"
+        s"""{
+       "microservice": "${S2S_SERVICE_NAME}"
         }"""
       )).asJson
       .check(bodyString.saveAs("s2sToken"))

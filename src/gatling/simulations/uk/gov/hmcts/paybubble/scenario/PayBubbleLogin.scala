@@ -85,15 +85,17 @@ object PayBubbleLogin {
 
     .exec(http("Login_040_Login3")
   .get("/api/payment-history/bulk-scan-feature")
-  .headers(CommonHeader.headers_bulkscanfeature))
+  .headers(CommonHeader.headers_bulkscanfeature)
+      //.check(headerRegex("Set-Cookie","__auth-token=(.*)").saveAs("authToken"))
+    )
 
-    .exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
+      .exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
 
     .pause(MinThinkTime , MaxThinkTime)
 
 
   val logout =
-  exec(http("request_106")
+  exec(http("Login_050_Logout")
         .get("/logout")
         .headers(CommonHeader.headers_logout)
         .check(status.is(404)))

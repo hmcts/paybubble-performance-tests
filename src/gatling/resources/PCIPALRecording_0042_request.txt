@@ -1,1 +1,0 @@
-{"fees":[{"code":"FEE0002","version":"5","calculated_amount":"550","memo_line":"RECEIPT OF FEES - Family issue divorce","natural_account_code":"4481102159","ccd_case_number":"1235123512351235","jurisdiction1":"family","jurisdiction2":"family court","description":"Filing an application for a divorce, nullity or civil partnership dissolution","volume":1,"fee_amount":"550"}]}
