@@ -69,7 +69,6 @@ object OnlineTelephonyScenario extends Simulation {
 		"x-xsrf-token" -> "${XSRFToken}")
 
 	val onlineTelephonyScenario = scenario("Online Telephony Payments Scenario")
-	//.exec(_.setAll(("case_number", session => case_number)))
 
 		// Enter case number
 		.group("PaymentAPI${service}_090_100_110"){

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.paybubble.util
 
-import scala.util.Random
 import com.typesafe.config.ConfigFactory
 
 object Environment {
