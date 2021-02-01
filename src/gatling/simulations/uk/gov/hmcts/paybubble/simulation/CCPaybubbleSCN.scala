@@ -2,7 +2,7 @@ package uk.gov.hmcts.paybubble.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, PCIPALRecording, PayBubbleLogin, PaymentTransactionAPI}
+import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, PayBubbleLogin, PaymentTransactionAPI}
 import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
 
 class CCPaybubbleSCN extends Simulation {
@@ -17,7 +17,7 @@ class CCPaybubbleSCN extends Simulation {
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
-	
+
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
 		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
@@ -48,11 +48,11 @@ class CCPaybubbleSCN extends Simulation {
 			.pause(10)
 			}
 
-	val telephony_online_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
-	{  feed(Feeders.TelephoneOnlineFeeder)
+	val onlineTelephony_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
+	{ feed(Feeders.OnlineTelephonyFeeder)
 		.exec(PayBubbleLogin.homePage)
 		.exec(PayBubbleLogin.login)
-		.exec(PCIPALRecording.telephonyOnlineScenario)
+		.exec(OnlineTelephonyScenario.onlineTelephonyScenario)
 		.exec(PayBubbleLogin.logout)
 	}
 
@@ -140,5 +140,5 @@ class CCPaybubbleSCN extends Simulation {
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)*/
 
-	setUp(telephony_online_Scn.inject(rampUsers(1) during(10))).protocols(baseProtocol)
+	setUp(onlineTelephony_Scn.inject(rampUsers(1) during(10))).protocols(baseProtocol)
 }

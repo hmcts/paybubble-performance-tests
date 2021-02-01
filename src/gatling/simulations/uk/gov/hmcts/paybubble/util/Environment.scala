@@ -1,6 +1,7 @@
 package uk.gov.hmcts.paybubble.util
 
 import scala.util.Random
+import com.typesafe.config.ConfigFactory
 
 object Environment {
 
@@ -19,8 +20,8 @@ object Environment {
  val DM_STORE_API_BASE_URI = "http://dm-store-perftest.service.core-compute-perftest.internal"
  //val S2S_SERVICE_NAME = "api_gw"
  val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service
- val IDAM_OAUTH_SECRET = ""
- val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ""
+ val IDAM_OAUTH_SECRET = ConfigFactory.load.getString("auth.clientSecret")
+ val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ConfigFactory.load.getString("aat_service.pass")
 
  val thinkTime = 10
 
@@ -41,6 +42,6 @@ object Environment {
  val r = new Random()
  val r1 = (10000000 + r.nextInt(90000000)).toString
  val r2 = (10000000 + r.nextInt(90000000)).toString
- val r3 = r1 + r2
+ val case_number = r1 + r2
 
 }

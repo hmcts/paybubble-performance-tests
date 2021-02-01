@@ -25,10 +25,12 @@ object PayBubbleLogin {
   //below requests are Homepage and relavant sub requests as part of the login submission
   //=====================================================================================
 
-  val homePage = {
+  val homePage =
 
+  exec(flushCookieJar)
+    .exec(flushHttpCache)
 
-    group("PaymentAPI${service}_010_Homepage"){
+    .group("PaymentAPI${service}_010_Homepage"){
     exec(http("PaymentAPI${service}_010_Homepage")
            .get("/")
         .headers(CommonHeader.headers_homepage)
@@ -39,7 +41,7 @@ object PayBubbleLogin {
            .check(css(".form-group>input[name='state']", "value").saveAs("state"))
            .check(css(".form-group>input[name='redirect_uri']", "value").saveAs("redirectUri"))*/
            /*.check(regex("""state="(.+?)"&amp;client_id="""").find(0).saveAs("stateid")))*/
-       .check(regex("""class="form" action="(.+?)" method="post"""").find(0).transform(str => str.replace("&amp;", "&"))saveAs("loginurl"))
+       .check(regex("""class="form" action="(.+?)" method="post"""").find(0).transform(str => str.replace("&amp;", "&")).saveAs("loginurl"))
       )
 
  //.replace(")", ""))
@@ -56,12 +58,12 @@ object PayBubbleLogin {
 //     session.set("activationLink", (pattern findFirstMatchIn session("loginurl").get).mkString.trim.replace("amp;", ""))
           session
         })
-  }
+
 
 
   //==================================================================================
   //Business process : Enter the login details and submit
-  //below requests are main login and relavant sub requests as part of the login submission
+  //below requests are main login and relevant sub requests as part of the login submission
   //==================================================================================
 
   val login =
@@ -75,14 +77,9 @@ object PayBubbleLogin {
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "false")
         .formParam("_csrf", "${csrf}")
-
-
     .check(status.is(200))
-    //.check(CsrfCheck.save)
-    //.check(regex("""<meta name="csrf-token" content=(.*?)","><title>""").find(0).saveAs("csrf1"))
-  )}
-
-    //.exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
+    .check(regex("""<meta name="csrf-token" content="(.*)"><title>""").saveAs("csrf")))
+  }
 
     .group("PaymentAPI${service}_030_Login2"){
     exec(http("PaymentAPI${service}_030_Login2")
@@ -116,16 +113,6 @@ object PayBubbleLogin {
       //.check(headerRegex("Set-Cookie","__auth-token=(.*)").saveAs("authToken"))
     )}
 
-      .exec(getCookieValue(CookieKey("__auth-token").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("authToken")))
-    .exec(getCookieValue(CookieKey("_csrf").withDomain("paybubble.perftest.platform.hmcts.net").saveAs("csrf")))
-
-
-    .exec( session => {
-      println("auth value "+session("authToken").as[String])
-        println("csrf value "+session("csrf").as[String]
-      )
-      session
-    })
     .pause(MinThinkTime , MaxThinkTime)
 
 
