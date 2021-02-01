@@ -38,10 +38,4 @@ object Environment {
   "sec-fetch-mode" -> "no-cors",
   "sec-fetch-site" -> "same-origin")
 
-
- val r = new Random()
- val r1 = (10000000 + r.nextInt(90000000)).toString
- val r2 = (10000000 + r.nextInt(90000000)).toString
- val case_number = r1 + r2
-
 }

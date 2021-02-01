@@ -69,21 +69,22 @@ object OnlineTelephonyScenario extends Simulation {
 		"x-xsrf-token" -> "${XSRFToken}")
 
 	val onlineTelephonyScenario = scenario("Online Telephony Payments Scenario")
+	//.exec(_.setAll(("case_number", session => case_number)))
 
 		// Enter case number
 		.group("PaymentAPI${service}_090_100_110"){
 		exec(http("PaymentAPI${service}_090_Cases")
-			.get(s"/api/cases/${case_number}")
+			.get("/api/cases/${case_number}")
 			.headers(headers_11)
 		  .check(status in (200,304)))
 
 			.exec(http("PaymentAPI${service}_100_PaymentHistory1")
-			.get(s"/api/payment-history/cases/${case_number}/paymentgroups")
+			.get("/api/payment-history/cases/${case_number}/paymentgroups")
 			.headers(headers_13)
 			.check(status.is(404)))
 
 			.exec(http("PaymentAPI${service}_110_BulkScanCases")
-			.get(s"/api/bulk-scan/cases/${case_number}")
+			.get("/api/bulk-scan/cases/${case_number}")
 			.headers(headers_13)
 			.check(status in (200,304)))}
 		  .pause(thinkTime)
@@ -114,12 +115,12 @@ object OnlineTelephonyScenario extends Simulation {
 			.check(status in (200,304)))}
 		  .pause(thinkTime)
 
-		// Select 'FEE0002'
+		// Select a fee
 		.group("PaymentAPI${service}_160_170_180"){
 		exec(http("PaymentAPI${service}_160_PaymentGroups1")
 			.post("/api/payment-groups")
 			.headers(headers_40)
-			.body(StringBody(s"""{"fees":[{"code":"FEE0002","version":"5","calculated_amount":"550","memo_line":"RECEIPT OF FEES - Family issue divorce","natural_account_code":"4481102159","ccd_case_number":"${case_number}","jurisdiction1":"family","jurisdiction2":"family court","description":"Filing an application for a divorce, nullity or civil partnership dissolution","volume":1,"fee_amount":"550"}]}"""))
+			.body(StringBody("""{"fees":[{"code":"${code}","version":"${version}","calculated_amount":"550","memo_line":"${memo_line}","natural_account_code":"${natural_account_code}","ccd_case_number":"${case_number}","jurisdiction1":"${jurisdiction1}","jurisdiction2":"${jurisdiction2}","description":"${description}","volume":1,"fee_amount":"550"}]}"""))
 			.check(jsonPath("$..payment_group_reference").saveAs("paymentGroup"))
 			.check(status in (200,304)))
 
@@ -139,7 +140,7 @@ object OnlineTelephonyScenario extends Simulation {
 		exec(http("PaymentAPI${service}_190_PaymentHistory5")
 			.post("/api/payment-history/payment-groups/${paymentGroup}/telephony-card-payments")
 			.headers(headers_40)
-			.body(StringBody(s"""{"currency":"GBP","ccd_case_number":"${case_number}","amount":"550.00","service":"DIVORCE","site_id":"AA07"}"""))
+			.body(StringBody("""{"currency":"GBP","ccd_case_number":"${case_number}","amount":"550.00","service":"DIVORCE","site_id":"AA07"}"""))
 			.check(headerRegex("Set-Cookie", """__pcipal-info=j%3A%7B%22url%22%3A%22https%3A%2F%2Feuwest1.pcipalstaging.cloud%2Fsession%2F303%2Fview%2F(.*)%2Fframed""").saveAs("sessionId"))
 			.check(headerRegex("Set-Cookie", """%2Fframed%22%2C%22auth%22%3A%22(.*)%22%2C""").saveAs("authToken"))
 			.check(status in (200,304)))

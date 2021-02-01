@@ -30,7 +30,7 @@ object PayBubbleLogin {
   exec(flushCookieJar)
     .exec(flushHttpCache)
 
-    .group("PaymentAPI${service}_010_Homepage"){
+    .group("PaymentAPI${service}_010"){
     exec(http("PaymentAPI${service}_010_Homepage")
            .get("/")
         .headers(CommonHeader.headers_homepage)
@@ -42,7 +42,7 @@ object PayBubbleLogin {
            .check(css(".form-group>input[name='redirect_uri']", "value").saveAs("redirectUri"))*/
            /*.check(regex("""state="(.+?)"&amp;client_id="""").find(0).saveAs("stateid")))*/
        .check(regex("""class="form" action="(.+?)" method="post"""").find(0).transform(str => str.replace("&amp;", "&")).saveAs("loginurl"))
-      )
+      )}
 
  //.replace(")", ""))
        // .check(css("#additional-evidence-form", "action").saveAs("uploadurl"))
@@ -50,7 +50,7 @@ object PayBubbleLogin {
    // .check(css("a:contains('forgotpassword')", "href").saveAs("computerURL")))
 
 
-    .pause( MinThinkTime, MaxThinkTime )}
+    .pause( MinThinkTime, MaxThinkTime )
 
    .exec( session => {
           println("csrf value "+session("csrf").as[String])
@@ -67,7 +67,7 @@ object PayBubbleLogin {
   //==================================================================================
 
   val login =
-  group("PaymentAPI${service}_020_Login1"){
+  group("PaymentAPI${service}_020_030_040_050_060_070_080"){
   exec(http("PaymentAPI${service}_020_Login1")
         .post(idamUrl + "${loginurl}")
        .headers(CommonHeader.headers_login)
@@ -79,35 +79,28 @@ object PayBubbleLogin {
         .formParam("_csrf", "${csrf}")
     .check(status.is(200))
     .check(regex("""<meta name="csrf-token" content="(.*)"><title>""").saveAs("csrf")))
-  }
 
-    .group("PaymentAPI${service}_030_Login2"){
-    exec(http("PaymentAPI${service}_030_Login2")
+    .exec(http("PaymentAPI${service}_030_Login2")
       .get("/api/payment-history/LD-feature?flag=apportion-feature")
-    .headers(CommonHeader.headers_bulkscanfeature))}
+    .headers(CommonHeader.headers_bulkscanfeature))
 
-    .group("PaymentAPI${service}_040_Login3"){
-      exec(http("PaymentAPI${service}_040_Login3")
+      .exec(http("PaymentAPI${service}_040_Login3")
     .get("/api/payment-history/LD-feature?flag=FE-pcipal-old-feature")
-        .headers(CommonHeader.headers_bulkscanfeature))}
+        .headers(CommonHeader.headers_bulkscanfeature))
 
-    .group("PaymentAPI${service}_050_Login4"){
-      exec(http("PaymentAPI${service}_050_Login4")
+      .exec(http("PaymentAPI${service}_050_Login4")
     .get("/api/payment-history/LD-feature?flag=FE-pcipal-antenna-feature")
-    .headers(CommonHeader.headers_bulkscanfeature))}
+    .headers(CommonHeader.headers_bulkscanfeature))
 
-    .group("PaymentAPI${service}_060_Login5"){
-      exec(http("PaymentAPI${service}_060_Login5")
+      .exec(http("PaymentAPI${service}_060_Login5")
     .get("/api/payment-history/LD-feature?flag=bspayments-strategic")
-    .headers(CommonHeader.headers_bulkscanfeature))}
+    .headers(CommonHeader.headers_bulkscanfeature))
 
-    .group("PaymentAPI${service}_070_Login6"){
-      exec(http("PaymentAPI${service}_070_Login6")
+      .exec(http("PaymentAPI${service}_070_Login6")
   .get("/api/payment-history/bulk-scan-feature")
-  .headers(CommonHeader.headers_bulkscanfeature))}
+  .headers(CommonHeader.headers_bulkscanfeature))
 
-    .group("PaymentAPI${service}_080_Login7"){
-      exec(http("PaymentAPI${service}_080_Login7")
+      .exec(http("PaymentAPI${service}_080_Login7")
   .get("/api/payment-history/bulk-scan-feature")
   .headers(CommonHeader.headers_bulkscanfeature)
       //.check(headerRegex("Set-Cookie","__auth-token=(.*)").saveAs("authToken"))
@@ -117,7 +110,7 @@ object PayBubbleLogin {
 
 
   val logout =
-  group("PaymentAPI${service}_${SignoutNumber}_Logout"){
+  group("PaymentAPI${service}_${SignoutNumber}"){
     exec(http("PaymentAPI${service}_${SignoutNumber}_Logout")
         .get("/logout")
         .headers(CommonHeader.headers_logout)
