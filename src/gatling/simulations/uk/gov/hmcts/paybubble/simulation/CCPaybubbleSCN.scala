@@ -3,8 +3,8 @@ package uk.gov.hmcts.paybubble.simulation
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, PayBubbleLogin, PaymentTransactionAPI}
-import uk.gov.hmcts.paybubble.util.Environment._
 import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
+import scala.concurrent.duration.DurationInt
 import scala.util.Random
 
 class CCPaybubbleSCN extends Simulation {
@@ -22,6 +22,11 @@ class CCPaybubbleSCN extends Simulation {
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 
+	val rampUpDurationMins = 2
+	val rampDownDurationMins = 2
+	val testDurationMins = 60
+	val HourlyTarget:Double = 20
+	val RatePerSec = HourlyTarget / 3600
 
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
@@ -148,5 +153,9 @@ class CCPaybubbleSCN extends Simulation {
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)*/
 
-	setUp(onlineTelephony_Scn.inject(rampUsers(10) during(300))).protocols(baseProtocol)
+	setUp(onlineTelephony_Scn.inject(
+		rampUsersPerSec(0.00) to (RatePerSec) during (rampUpDurationMins minutes),
+		constantUsersPerSec(RatePerSec) during (testDurationMins minutes),
+		rampUsersPerSec(RatePerSec) to (0.00) during (rampDownDurationMins minutes)
+	)).protocols(baseProtocol)
 }

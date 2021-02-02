@@ -26,6 +26,7 @@ object OnlineTelephonyScenario extends Simulation {
 		"csrf-token" -> "${csrf}",
 		"x-requested-with" -> "XMLHttpRequest")
 
+	// Note: String interpolation is used so that the baseURL variable can be used directly without needing to add it to the session first
 	val content_type_header = Map(
 		"content-type" -> "application/json",
 		"origin" -> s"${baseURL}")
@@ -39,6 +40,7 @@ object OnlineTelephonyScenario extends Simulation {
 		"origin" -> "null",
 		"sec-fetch-site" -> "cross-site")
 
+	// Note: String interpolation is used so that the PCIPALURL variable can be used directly without needing to add it to the session first
 	val pcipal_header_3 = Map(
 		"content-type" -> "application/json",
 		"origin" -> s"${PCIPALURL}",
