@@ -42,7 +42,10 @@ object Feeders {
   }),
     "SignoutNumber" -> ({
       "240"
-    })
+    }),
+  "SignoutGroupNumber" -> ({
+    "100"
+  })
   ));
 
   val PBAFeeder = Iterator.continually(Map("service" -> ({

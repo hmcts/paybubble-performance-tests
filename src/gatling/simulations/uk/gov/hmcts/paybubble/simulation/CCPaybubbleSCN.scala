@@ -34,6 +34,7 @@ class CCPaybubbleSCN extends Simulation {
 	val baseProtocol = http
 		.baseUrl(baseURL)
 		.inferHtmlResources()
+		.silentResources
 
 	val createS2S_Scn = scenario("Create Bundling For IAC ")
 		.exec(S2SHelper.getOTP)

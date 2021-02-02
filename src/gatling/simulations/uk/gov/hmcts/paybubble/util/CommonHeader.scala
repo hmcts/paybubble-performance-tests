@@ -67,7 +67,7 @@ object CommonHeader {
   "accept" -> "*/*",
   "accept-encoding" -> "gzip, deflate, br",
   "accept-language" -> "en-US,en;q=0.9",
-  "origin" -> "https://paybubble.perftest.platform.hmcts.net",
+  "origin" -> s"${baseURL}",
   "sec-fetch-dest" -> "font",
   "sec-fetch-mode" -> "cors",
   "sec-fetch-site" -> "same-origin")
@@ -106,7 +106,7 @@ object CommonHeader {
   "accept" -> "application/json, text/plain, */*",
   "accept-encoding" -> "gzip, deflate, br",
   "accept-language" -> "en-US,en;q=0.9",
-  "csrf-token" -> "ZNx4HoMO-JSv6OXDS0wBu8feJjq7qO1r843A",
+  "csrf-token" -> "${csrf}",
   "sec-fetch-dest" -> "empty",
   "sec-fetch-mode" -> "cors",
   "sec-fetch-site" -> "same-origin",
