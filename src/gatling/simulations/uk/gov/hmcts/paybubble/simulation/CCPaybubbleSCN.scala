@@ -20,6 +20,7 @@ class CCPaybubbleSCN extends Simulation {
 	val feederpba =jsonFile("dataPBA.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
+	val usersFeeder = csv("users.csv").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 
 	val rampUpDurationMins = 2
@@ -61,6 +62,7 @@ class CCPaybubbleSCN extends Simulation {
 
 	val onlineTelephony_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
 	{ feed(onlineTelephonyFeeder)
+		.feed(usersFeeder)
 		.feed(caseNumber)
 		.feed(Feeders.OnlineTelephonyFeeder)
 		.exec(PayBubbleLogin.homePage)
@@ -152,6 +154,8 @@ class CCPaybubbleSCN extends Simulation {
 	PBA_Scn.inject(nothingFor(45),rampUsers(79) during (3500)),
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)*/
+
+	//setUp(onlineTelephony_Scn.inject(rampUsers(1) during(10))).protocols(baseProtocol)
 
 	setUp(onlineTelephony_Scn.inject(
 		rampUsersPerSec(0.00) to (RatePerSec) during (rampUpDurationMins minutes),
