@@ -77,6 +77,7 @@ object PayBubbleLogin {
       .headers(CommonHeader.headers_bulkscanfeature))
   }
 
+    .exitHereIfFailed
     .pause(MinThinkTime , MaxThinkTime)
 
 
