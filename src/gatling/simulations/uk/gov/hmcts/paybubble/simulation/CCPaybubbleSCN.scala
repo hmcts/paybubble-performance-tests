@@ -26,7 +26,7 @@ class CCPaybubbleSCN extends Simulation {
 	val rampUpDurationMins = 2
 	val rampDownDurationMins = 2
 	val testDurationMins = 60
-	val HourlyTarget:Double = 30
+	val HourlyTarget:Double = 60
 	val RatePerSec = HourlyTarget / 3600
 
 	val httpProtocol = http
