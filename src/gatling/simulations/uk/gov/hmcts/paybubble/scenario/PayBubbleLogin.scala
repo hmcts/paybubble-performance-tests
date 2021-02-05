@@ -86,7 +86,7 @@ object PayBubbleLogin {
   //==================================================================================
 
   val logout =
-  group("PaymentAPI${service}_${SignoutGroupNumber}_Logout"){
+  group("PaymentAPI${service}_${SignoutNumber}_Logout"){
     exec(http("PaymentAPI${service}_${SignoutNumber}_010_Logout")
     .get("/logout")
       .headers(CommonHeader.headers_logout)

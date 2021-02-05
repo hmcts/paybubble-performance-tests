@@ -41,11 +41,8 @@ object Feeders {
     "Online_Telephony"
   }),
     "SignoutNumber" -> ({
-      "240"
+      "100"
     }),
-  "SignoutGroupNumber" -> ({
-    "100"
-  })
   ));
 
   val PBAFeeder = Iterator.continually(Map("service" -> ({
