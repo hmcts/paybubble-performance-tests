@@ -53,26 +53,6 @@ object PayBubbleLogin {
       .check(regex("""<meta name="csrf-token" content="(.*)"><title>""").saveAs("csrf")))
 
     .exec(http("PaymentAPI${service}_020_020_Login2")
-    .get("/api/payment-history/LD-feature?flag=apportion-feature")
-      .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("PaymentAPI${service}_020_030_Login3")
-    .get("/api/payment-history/LD-feature?flag=FE-pcipal-old-feature")
-      .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("PaymentAPI${service}_020_040_Login4")
-    .get("/api/payment-history/LD-feature?flag=FE-pcipal-antenna-feature")
-      .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("PaymentAPI${service}_020_050_Login5")
-    .get("/api/payment-history/LD-feature?flag=bspayments-strategic")
-      .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("PaymentAPI${service}_020_060_Login6")
-    .get("/api/payment-history/bulk-scan-feature")
-      .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("PaymentAPI${service}_020_070_Login7")
     .get("/api/payment-history/bulk-scan-feature")
       .headers(CommonHeader.headers_bulkscanfeature))
   }
