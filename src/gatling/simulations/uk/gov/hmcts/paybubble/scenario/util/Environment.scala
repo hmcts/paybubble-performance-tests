@@ -13,6 +13,7 @@ object Environment {
   val baseURL = "https://paybubble.aat.platform.hmcts.net"
   val bulkScanURL="http://ccpay-bulkscanning-api-aat.service.core-compute-aat.internal"
   val paymentAPIURL="http://payment-api-aat.service.core-compute-aat.internal"
+  val PCIPALURL = "https://euwest1.pcipalstaging.cloud"
   val adminUserAO = ""
   val adminPasswordAO = ""
   val IDAM_API_BASE_URI = "https://idam-api.aat.platform.hmcts.net"
@@ -26,11 +27,11 @@ object Environment {
   val IDAM_OAUTH_SECRET = config.getString("auth.clientSecret")
   val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = config.getString("aat_service.pass")
 
-  val thinkTime = 1
+  val thinkTime = 10
 
-  val minThinkTime = 5
+  val minThinkTime = 10
   //10
-  val maxThinkTime = 6
+  val maxThinkTime = 10
   //30
 
   val commonHeader = Map(

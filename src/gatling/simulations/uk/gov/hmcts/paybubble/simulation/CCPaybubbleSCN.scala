@@ -2,9 +2,11 @@ package uk.gov.hmcts.paybubble.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, PayBubbleLogin, PaymentTransactionAPI}
+import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, PayBubbleLogin, PaymentTransactionAPI}
 import uk.gov.hmcts.paybubble.scenario.util._
 import com.typesafe.config.{Config, ConfigFactory}
+
+import scala.util.Random
 
 class CCPaybubbleSCN extends Simulation {
 
@@ -20,15 +22,19 @@ class CCPaybubbleSCN extends Simulation {
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
-	
+	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
+	val onlineTelephonyCaseFeeder = csv("onlinetelephonycaseids.csv").circular
+	val usersFeeder = csv("users.csv").circular
+
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
-		.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
+		.inferHtmlResources()
+		.silentResources
+		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
 
 	val bulkscanhttpProtocol = http
 		.baseUrl(bulkScanUrl)
 		//.proxy(Proxy("proxyout.reform.hmcts.net", 8080))
-
 
   	val createS2S_Scn = scenario("Create Bundling For IAC ")
 		.exec(S2SHelper.getOTP)
@@ -47,6 +53,17 @@ class CCPaybubbleSCN extends Simulation {
 			exec(IDAMHelper.getIdamTokenLatest).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
 			.pause(10)
 			}
+
+	val onlineTelephony_Scn = scenario("Online Telephony Payments Scenario").repeat(1)
+	{ feed(onlineTelephonyFeeder)
+		.feed(usersFeeder)
+		.feed(onlineTelephonyCaseFeeder)
+		.feed(Feeders.OnlineTelephonyFeeder)
+		.exec(PayBubbleLogin.homePage)
+		.exec(PayBubbleLogin.login)
+		.exec(OnlineTelephonyScenario.onlineTelephonyScenario)
+		.exec(PayBubbleLogin.logout)
+	}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
   		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
@@ -129,6 +146,7 @@ class CCPaybubbleSCN extends Simulation {
 	onlinePayment_Scn.inject(rampUsers(10) during (300)),
 	bulkscan_Scn.inject(rampUsers(10) during (300)),
 	PBA_Scn.inject(rampUsers(10) during (300)),
-	telephony_Scn.inject(rampUsers(10) during (300))
-	).protocols(httpProtocol)
+	telephony_Scn.inject(rampUsers(10) during (300)),
+	onlineTelephony_Scn.inject(rampUsers(10) during (300))
+		).protocols(httpProtocol)
 }

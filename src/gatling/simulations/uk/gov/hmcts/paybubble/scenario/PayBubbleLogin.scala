@@ -8,90 +8,69 @@ import uk.gov.hmcts.paybubble.scenario.util._
 
 object PayBubbleLogin {
 
-  //val BaseURL = Environment.baseURL
   val idamUrl = Environment.idamURL
   val baseURL=Environment.baseURL
-  //val loginFeeder = csv("OrgId.csv").circular
-  val host="paybubble.perftest.platform.hmcts.net"
-
-
   val MinThinkTime = Environment.minThinkTime
   val MaxThinkTime = Environment.maxThinkTime
 
   //====================================================================================
-  //Business process : Access Home Page by hitting the URL and relavant sub requests
-  //below requests are Homepage and relavant sub requests as part of the login submission
+  //Business process : Access Home Page by hitting the URL and relevant sub requests
+  //below requests are Homepage and relevant sub requests as part of the login submission
   //=====================================================================================
 
   val homePage =
+    exec(flushCookieJar)
+      .exec(flushHttpCache)
 
+      .group("PaymentAPI${service}_010_Homepage"){
+        exec(http("PaymentAPI${service}_010_010_Homepage")
+          .get(baseURL + "/")
+          .headers(CommonHeader.headers_homepage)
+          .check(CsrfCheck.save)
+          .check(status.is(200))
+          .check(regex("""class="form" action="(.+?)" method="post"""").find(0).transform(str => str.replace("&amp;", "&")).saveAs("loginurl")))
+      }
 
-      exec(http("PayBubble_010_005_Homepage")
-           .get("/")
-        .headers(CommonHeader.headers_homepage)
-             .check(CsrfCheck.save)
-        .check(status.is(200))
-        //.check(css("authorizeCommand", "action").saveAs("loginurl"))
-          /* .check(css(".form-group>input[name='client_id']", "value").saveAs("clientId"))
-           .check(css(".form-group>input[name='state']", "value").saveAs("state"))
-           .check(css(".form-group>input[name='redirect_uri']", "value").saveAs("redirectUri"))*/
-           /*.check(regex("""state="(.+?)"&amp;client_id="""").find(0).saveAs("stateid")))*/
-       .check(regex("""class="form" action="(.+?)" method="post"""").find(0).saveAs("loginurl"))
-      )
-
- //.replace(")", ""))
-       // .check(css("#additional-evidence-form", "action").saveAs("uploadurl"))
-
-   // .check(css("a:contains('forgotpassword')", "href").saveAs("computerURL")))
-
-
-    .pause( MinThinkTime, MaxThinkTime )
-
-   .exec( session => {
-          println("csrf value "+session("csrf").as[String])
-     println("login url  "+session("loginurl").as[String])
-//     session.set("activationLink", (pattern findFirstMatchIn session("loginurl").get).mkString.trim.replace("amp;", ""))
-          session
-        })
-
-
+      .pause(MinThinkTime, MaxThinkTime)
 
   //==================================================================================
   //Business process : Enter the login details and submit
-  //below requests are main login and relavant sub requests as part of the login submission
+  //below requests are main login and relevant sub requests as part of the login submission
   //==================================================================================
 
   val login =
-  exec(http("Login")
-        .post(idamUrl + "${loginurl1}")
-       .headers(CommonHeader.headers_login)
-    .formParam(csrfParameter, csrfTemplate)
-        .formParam("username", "ccdloadtest1@gmail.com")
-        .formParam("password", "Password12")
+    group("PaymentAPI${service}_020_Login"){
+      exec(http("PaymentAPI${service}_020_010_Login1")
+        .post(idamUrl + "${loginurl}")
+        .headers(CommonHeader.headers_login)
+        .formParam(csrfParameter, csrfTemplate)
+        .formParam("username", "${username}")
+        .formParam("password", "${password}")
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "false")
+        .formParam("_csrf", "${csrf}")
+        .check(status.is(200))
+        .check(regex("""<meta name="csrf-token" content="(.*)"><title>""").saveAs("csrf")))
 
-    .check(status.is(200))
-    .check(regex("""<meta name="csrf-token" content=(.*?)","><title>""").find(0).saveAs("csrf1"))
-  )
+        .exec(http("PaymentAPI${service}_020_020_Login2")
+          .get(baseURL + "/api/payment-history/bulk-scan-feature")
+          .headers(CommonHeader.headers_bulkscanfeature))
+    }
+
+      .exitHereIfFailed
+      .pause(MinThinkTime , MaxThinkTime)
 
 
-    .exec(http("request_37")
-  .get("/api/payment-history/bulk-scan-feature")
-  .headers(CommonHeader.headers_bulkscanfeature))
-
-    .exec(http("request_38")
-  .get("/api/payment-history/bulk-scan-feature")
-  .headers(CommonHeader.headers_bulkscanfeature))
-
-    .pause(MinThinkTime , MaxThinkTime)
-
+  //==================================================================================
+  //Business process : Log out of Paybubble
+  //==================================================================================
 
   val logout =
-  exec(http("request_106")
-        .get("/logout")
+    group("PaymentAPI${service}_${SignoutNumber}_Logout"){
+      exec(http("PaymentAPI${service}_${SignoutNumber}_010_Logout")
+        .get(baseURL + "/logout")
         .headers(CommonHeader.headers_logout)
+        .check(regex("This page cannot be found"))
         .check(status.is(404)))
-
-
+    }
 }

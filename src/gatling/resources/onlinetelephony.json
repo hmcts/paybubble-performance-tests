@@ -1,0 +1,39 @@
+[
+  {
+    "code": "FEE0002",
+    "version": "5",
+    "memo_line": "RECEIPT OF FEES - Family issue divorce",
+    "natural_account_code": "4481102159",
+    "jurisdiction1": "family",
+    "jurisdiction2": "family court",
+    "description": "Filing an application for a divorce, nullity or civil partnership dissolution"
+  },
+  {
+    "code": "FEE0230",
+    "version": "1",
+    "memo_line": "RECEIPT OF FEES - Tribunal issue other",
+    "natural_account_code": "4481102178",
+    "jurisdiction1": "tribunal",
+    "jurisdiction2": "upper tribunal lands chamber",
+    "description": "Absent owner application Sch 2 CPA1965 (a)"
+  },
+  {
+    "code": "FEE0304",
+    "version": "1",
+    "memo_line": "RECEIPT OF FEES - Tribunal hearing other",
+    "natural_account_code": "4481102179",
+    "jurisdiction1": "tribunal",
+    "jurisdiction2": "upper tribunal lands chamber",
+    "description": "Hrg or prelim hrg of reference /appeal (no amount awarded)"
+  },
+  {
+    "code": "FEE0303",
+    "version": "1",
+    "memo_line": "RECEIPT OF FEES - Tribunal hearing other",
+    "natural_account_code": "4481102179",
+    "jurisdiction1": "tribunal",
+    "jurisdiction2": "upper tribunal lands chamber",
+    "description": "Hrg as to entitlement- s84 LoPA1925(e) discharge /modify restrictive convenant"
+
+  }
+]
