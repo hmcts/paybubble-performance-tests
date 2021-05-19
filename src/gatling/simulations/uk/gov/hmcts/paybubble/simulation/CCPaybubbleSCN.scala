@@ -148,5 +148,7 @@ class CCPaybubbleSCN extends Simulation {
 	PBA_Scn.inject(rampUsers(10) during (300)),
 	telephony_Scn.inject(rampUsers(10) during (300)),
 	onlineTelephony_Scn.inject(rampUsers(10) during (300))
-		).protocols(httpProtocol)
+       ).protocols(httpProtocol)
+        .assertions(global.successfulRequests.percent.is(100))
+
 }
