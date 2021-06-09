@@ -2,6 +2,10 @@ package uk.gov.hmcts.paybubble.util
 
 import com.typesafe.config.ConfigFactory
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+
 object Environment {
 
  val environment: String = System.getProperty("env")
@@ -37,4 +41,9 @@ object Environment {
   "sec-fetch-mode" -> "no-cors",
   "sec-fetch-site" -> "same-origin")
 
+ val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+ val current_date = LocalDate.now().format(pattern)
+
 }
+
+

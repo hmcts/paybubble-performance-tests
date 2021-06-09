@@ -18,6 +18,7 @@ class CCPaybubbleSCN extends Simulation {
 	val feederbulkscan =jsonFile("databulkscanpayments.json").circular
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
+	val feederpbaiac =csv("IAC_case_ids.csv").circular
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val usersFeeder = csv("users.csv").circular
@@ -26,7 +27,7 @@ class CCPaybubbleSCN extends Simulation {
 	val rampUpDurationMins = 2
 	val rampDownDurationMins = 2
 	val testDurationMins = 60
-	val HourlyTarget:Double = 60
+	val HourlyTarget:Double = 50
 	val RatePerSec = HourlyTarget / 3600
 
 	val httpProtocol = http
@@ -90,11 +91,14 @@ class CCPaybubbleSCN extends Simulation {
 			}
 
 	val PBA_Scn = scenario("Pay By Account Scenario ")
-  		.feed(feederpba).feed(Feeders.PBAFeeder)
+  		.feed(feederpba).feed(feederpbaiac).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
 			exec(IDAMHelper.getIdamToken)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.PBA)
+			.exec(PaymentTransactionAPI.PBA_IAC)
+			//.exec(PaymentTransactionAPI.reconciliationPayments)
+
 			}
 
 	val CCDViewPayment_Scn = scenario("View Payments Scenario ")
@@ -155,11 +159,11 @@ class CCPaybubbleSCN extends Simulation {
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)*/
 
-	//setUp(onlineTelephony_Scn.inject(rampUsers(1) during(10))).protocols(baseProtocol)
+	//setUp(PBA_Scn.inject(rampUsers(1) during(10))).protocols(httpProtocol)
 
-	setUp(onlineTelephony_Scn.inject(
+	setUp(PBA_Scn.inject(
 		rampUsersPerSec(0.00) to (RatePerSec) during (rampUpDurationMins minutes),
 		constantUsersPerSec(RatePerSec) during (testDurationMins minutes),
 		rampUsersPerSec(RatePerSec) to (0.00) during (rampDownDurationMins minutes)
-	)).protocols(baseProtocol)
+	)).protocols(httpProtocol)
 }
