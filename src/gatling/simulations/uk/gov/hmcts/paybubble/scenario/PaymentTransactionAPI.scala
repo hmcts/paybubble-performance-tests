@@ -55,7 +55,7 @@ val paymentAPIURL=Environment.paymentAPIURL
   val reconciliationPayments = exec(http("PaymentAPI${service}_050_ReconciliationPayments")
     .get(s"/reconciliation-payments?end_date=${current_date}&start_date=${current_date}")
     .header("ServiceAuthorization", "${s2sToken}")
-    .check(status is 200))
+    .check(status.in(200,206)))
     .pause(10)
 
   val onlinePayment = exec(http("PaymentAPI${service}_030_OnlinePayments")
