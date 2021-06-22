@@ -93,11 +93,11 @@ class CCPaybubbleSCN extends Simulation {
 	val PBA_Scn = scenario("Pay By Account Scenario ")
   		.feed(feederpba).feed(feederpbaiac).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
-			//exec(IDAMHelper.getIdamToken)
-			exec(S2SHelper.S2SAuthToken)
-			//.exec(PaymentTransactionAPI.PBA)
-			//.exec(PaymentTransactionAPI.PBA_IAC)
-			.exec(PaymentTransactionAPI.reconciliationPayments)
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.PBA)
+			.exec(PaymentTransactionAPI.PBA_IAC)
+			//.exec(PaymentTransactionAPI.reconciliationPayments)
 
 			}
 
@@ -159,11 +159,20 @@ class CCPaybubbleSCN extends Simulation {
 	telephony_Scn.inject(nothingFor(55),rampUsers(100) during (3500))
 	).protocols(httpProtocol)*/
 
-	setUp(PBA_Scn.inject(rampUsers(1) during(10))).protocols(httpProtocol)
+	/*setUp(
+		CCDViewPayment_Scn.inject(rampUsers(10) during (300)),
+		onlinePayment_Scn.inject(rampUsers(10) during (300)),
+		bulkscan_Scn.inject(rampUsers(10) during (300)),
+		PBA_Scn.inject(rampUsers(10) during (300)),
+		telephony_Scn.inject(rampUsers(10) during (300)),
+		onlineTelephony_Scn.inject(rampUsers(10) during (300))
+	).protocols(httpProtocol)*/
 
-	/*setUp(PBA_Scn.inject(
+	//setUp(PBA_Scn.inject(rampUsers(1) during(10))).protocols(httpProtocol)
+
+	setUp(PBA_Scn.inject(
 		rampUsersPerSec(0.00) to (RatePerSec) during (rampUpDurationMins minutes),
 		constantUsersPerSec(RatePerSec) during (testDurationMins minutes),
 		rampUsersPerSec(RatePerSec) to (0.00) during (rampDownDurationMins minutes)
-	)).protocols(httpProtocol)*/
+	)).protocols(httpProtocol)
 }
