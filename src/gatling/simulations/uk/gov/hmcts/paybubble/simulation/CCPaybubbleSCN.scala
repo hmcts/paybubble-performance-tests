@@ -6,8 +6,6 @@ import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, P
 import uk.gov.hmcts.paybubble.scenario.util._
 import com.typesafe.config.{Config, ConfigFactory}
 
-import scala.util.Random
-
 class CCPaybubbleSCN extends Simulation {
 
 	val config: Config = ConfigFactory.load()
@@ -148,7 +146,8 @@ class CCPaybubbleSCN extends Simulation {
 	PBA_Scn.inject(rampUsers(10) during (300)),
 	telephony_Scn.inject(rampUsers(10) during (300)),
 	onlineTelephony_Scn.inject(rampUsers(10) during (300))
-       ).protocols(httpProtocol)
-        .assertions(global.successfulRequests.percent.is(100))
+ ).protocols(httpProtocol)
+	.assertions(global.successfulRequests.percent.gte(95))
+	.assertions(forAll.successfulRequests.percent.gte(90))
 
 }
