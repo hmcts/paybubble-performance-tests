@@ -22,13 +22,27 @@ class CCPaybubbleSCN extends Simulation {
 	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val usersFeeder = csv("users.csv").circular
+	val dcnnumberFeeder = csv("dcn_numbers.csv").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 
 	val rampUpDurationMins = 2
 	val rampDownDurationMins = 2
 	val testDurationMins = 60
-	val HourlyTarget:Double = 50
-	val RatePerSec = HourlyTarget / 3600
+
+	val CCDViewPaymentHourlyTarget:Double = 459
+	val CCDViewPaymentRatePerSec = CCDViewPaymentHourlyTarget / 3600
+
+	val onlinePaymentHourlyTarget:Double = 220
+	val onlinePaymentRatePerSec = onlinePaymentHourlyTarget / 3600
+
+	val bulkscanHourlyTarget:Double = 38
+	val bulkscanRatePerSec = bulkscanHourlyTarget / 3600
+
+	val PBAHourlyTarget:Double = 91
+	val PBARatePerSec = PBAHourlyTarget / 3600
+
+	val telephonyHourlyTarget:Double = 8
+	val telephonyRatePerSec = telephonyHourlyTarget / 3600
 
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
@@ -73,10 +87,11 @@ class CCPaybubbleSCN extends Simulation {
 	}
 
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario ")
-  		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
+  		.feed(feederbulkscan).feed(dcnnumberFeeder).feed(Feeders.BulkscanFeeder)
 	  	.repeat(1) {//74
 			exec(IDAMHelper.getIdamToken)
 			.exec(S2SHelper.S2SAuthToken)
+			.exec(DCNGenerator.generateDCN)
 			.exec(PaymentTransactionAPI.getPaymentGroupReference)
 			.exec(PaymentTransactionAPI.bulkscan)
 			.exec(PaymentTransactionAPI.paymentAllocations)
@@ -93,11 +108,11 @@ class CCPaybubbleSCN extends Simulation {
 	val PBA_Scn = scenario("Pay By Account Scenario ")
   		.feed(feederpba).feed(feederpbaiac).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
-			//exec(IDAMHelper.getIdamToken)
-			exec(S2SHelper.S2SAuthToken)
-			//.exec(PaymentTransactionAPI.PBA)
+			exec(IDAMHelper.getIdamToken)
+			.exec(S2SHelper.S2SAuthToken)
+			.exec(PaymentTransactionAPI.PBA)
 			//.exec(PaymentTransactionAPI.PBA_IAC)
-			.exec(PaymentTransactionAPI.reconciliationPayments)
+			//.exec(PaymentTransactionAPI.reconciliationPayments)
 
 			}
 
@@ -160,19 +175,36 @@ class CCPaybubbleSCN extends Simulation {
 	).protocols(httpProtocol)*/
 
 	/*setUp(
-		CCDViewPayment_Scn.inject(rampUsers(10) during (300)),
-		onlinePayment_Scn.inject(rampUsers(10) during (300)),
-		bulkscan_Scn.inject(rampUsers(10) during (300)),
-		PBA_Scn.inject(rampUsers(10) during (300)),
-		telephony_Scn.inject(rampUsers(10) during (300)),
-		onlineTelephony_Scn.inject(rampUsers(10) during (300))
+		CCDViewPayment_Scn.inject(rampUsers(1) during (10)),
+		onlinePayment_Scn.inject(rampUsers(1) during (10)),
+		bulkscan_Scn.inject(rampUsers(1) during (10)),
+		PBA_Scn.inject(rampUsers(1) during (10)),
+		telephony_Scn.inject(rampUsers(1) during (10))
+		//onlineTelephony_Scn.inject(rampUsers(1) during (10))
 	).protocols(httpProtocol)*/
 
-	setUp(PBA_Scn.inject(rampUsers(1) during(10))).protocols(httpProtocol)
+	//setUp(datagendcn_Scn.inject(rampUsers(1) during (10))).protocols(bulkscanhttpProtocol)
 
-	/*setUp(PBA_Scn.inject(
-		rampUsersPerSec(0.00) to (RatePerSec) during (rampUpDurationMins minutes),
-		constantUsersPerSec(RatePerSec) during (testDurationMins minutes),
-		rampUsersPerSec(RatePerSec) to (0.00) during (rampDownDurationMins minutes)
-	)).protocols(httpProtocol)*/
+	setUp(CCDViewPayment_Scn.inject(
+		rampUsersPerSec(0.00) to (CCDViewPaymentRatePerSec) during (rampUpDurationMins minutes),
+		constantUsersPerSec(CCDViewPaymentRatePerSec) during (testDurationMins minutes),
+		rampUsersPerSec(CCDViewPaymentRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		onlinePayment_Scn.inject(rampUsersPerSec(0.00) to (onlinePaymentRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(onlinePaymentRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(onlinePaymentRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		bulkscan_Scn.inject(rampUsersPerSec(0.00) to (bulkscanRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(bulkscanRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(bulkscanRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		PBA_Scn.inject(rampUsersPerSec(0.00) to (PBARatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(PBARatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(PBARatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		telephony_Scn.inject(rampUsersPerSec(0.00) to (telephonyRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(telephonyRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(telephonyRatePerSec) to (0.00) during (rampDownDurationMins minutes))
+	)
+		.protocols(httpProtocol)
 }

@@ -10,24 +10,24 @@ val bulkScanUrl=Environment.bulkScanURL
 
 
   val generateDCN = exec(http("TX040_PayBubble_BulkScanPayment")
-    .post("/bulk-scan-payment")
+    .post("http://ccpay-bulkscanning-api-perftest.service.core-compute-perftest.internal/bulk-scan-payment")
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
     .body(StringBody(
-      "{ \"amount\": ${amount}, \"bank_giro_credit_slip_number\": ${bankslipno}, \"banked_date\": \"${date}\", \"currency\": \"GBP\", \"document_control_number\": \"${dcn}\", \"method\": \"cash\"}"
+      "{ \"amount\": ${amount}, \"bank_giro_credit_slip_number\": ${bankslipno}, \"banked_date\": \"${date}\", \"currency\": \"GBP\", \"document_control_number\": \"${dcn_number}\", \"method\": \"cash\"}"
     )
     ).asJson
     .check(status is 201))
       .pause(10)
 
     .exec(http("TX050_PayBubble_BulkScanPayment")
-      .post("/bulk-scan-payments")
+      .post("http://ccpay-bulkscanning-api-perftest.service.core-compute-perftest.internal/bulk-scan-payments")
       .header("ServiceAuthorization", "${s2sToken}")
       .header("Content-Type", "application/json")
       .body(StringBody(
-        "{ \"ccd_case_number\": \"${caseid}\", \"document_control_numbers\": [ \"${dcn}\" ], \"is_exception_record\": false, \"site_id\": \"AA07\"}"
+        "{ \"ccd_case_number\": \"${caseid}\", \"document_control_numbers\": [ \"${dcn_number}\" ], \"is_exception_record\": false, \"site_id\": \"AA07\"}"
       )).asJson
-       .check(status is 201))
+      .check(status is 201))
   .pause(10)
 
    /* .exec(http("TX060_PayBubble_BulkScanPayment")
