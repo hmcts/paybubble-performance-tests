@@ -91,7 +91,7 @@ class CCPaybubbleSCN extends Simulation {
 	  	.repeat(1) {//74
 			exec(IDAMHelper.getIdamToken)
 			.exec(S2SHelper.S2SAuthToken)
-			.exec(DCNGenerator.generateDCN)
+			//.exec(DCNGenerator.generateDCN)
 			.exec(PaymentTransactionAPI.getPaymentGroupReference)
 			.exec(PaymentTransactionAPI.bulkscan)
 			.exec(PaymentTransactionAPI.paymentAllocations)

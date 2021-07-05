@@ -10,7 +10,7 @@ object PaymentTransactionAPI {
 val paymentAPIURL=Environment.paymentAPIURL
 
   val getPaymentGroupReference=
-    exec(http("PaymentAPI${service}_030_GetPaymentGrpRef")
+    exec(http("PaymentAPI${service}_010_GetPaymentGrpRef")
          .post("/payment-groups")
          .header("Authorization", " ${accessToken}")
          .header("ServiceAuthorization", "${s2sToken}")
@@ -26,7 +26,7 @@ val paymentAPIURL=Environment.paymentAPIURL
     )
     .pause(10)
 
-  val PBA = exec(http("PaymentAPI${service}_030_PayByAccounts")
+  val PBA = exec(http("PaymentAPI${service}_010_PayByAccounts")
     .post("/credit-account-payments")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
@@ -39,7 +39,7 @@ val paymentAPIURL=Environment.paymentAPIURL
     .check(status is 201))
       .pause(10)
 
-  val PBA_IAC = exec(http("PaymentAPI${service}_040_PayByAccountsIAC")
+  val PBA_IAC = exec(http("PaymentAPI${service}_020_PayByAccountsIAC")
     .post("/credit-account-payments")
     .header("Authorization", " ${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
@@ -52,13 +52,13 @@ val paymentAPIURL=Environment.paymentAPIURL
     .check(status is 201))
     .pause(10)
 
-  val reconciliationPayments = exec(http("PaymentAPI${service}_050_ReconciliationPayments")
+  val reconciliationPayments = exec(http("PaymentAPI${service}_030_ReconciliationPayments")
     .get(s"/reconciliation-payments?end_date=${current_date}&start_date=${current_date}")
     .header("ServiceAuthorization", "${s2sToken}")
     .check(status is (200)))
     .pause(10)
 
-  val onlinePayment = exec(http("PaymentAPI${service}_030_OnlinePayments")
+  val onlinePayment = exec(http("PaymentAPI${service}_010_OnlinePayments")
                  .post("/card-payments")
                  .header("Authorization", "${accessToken}")
                  .header("ServiceAuthorization", "${s2sToken}")
@@ -73,7 +73,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                  .check(status is 201))
             .pause(30)
 
-  val telephony = exec(http("PaymentAPI${service}_040_TelePayments")
+  val telephony = exec(http("PaymentAPI${service}_020_TelePayments")
                            .post("/payment-groups/${paymentgroupref}/telephony-card-payments")
                            .header("Authorization", "${accessToken}")
                            .header("ServiceAuthorization", "${s2sToken}")
@@ -88,7 +88,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                            .check(status is 201))
                       .pause(10)
 
-  val bulkscan = exec(http("PaymentAPI${service}_040_BulkScanPayments")
+  val bulkscan = exec(http("PaymentAPI${service}_020_BulkScanPayments")
                       .post("/payment-groups/${paymentgroupref}/bulk-scan-payments-strategic")
                            .header("Authorization", "Bearer ${accessToken}")
                            .header("ServiceAuthorization", "${s2sToken}")
@@ -103,7 +103,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                       .pause(10)
 
 
-  val paymentAllocations = exec(http("PaymentAPI${service}_050_BulkScanPaymentAllocations")
+  val paymentAllocations = exec(http("PaymentAPI${service}_030_BulkScanPaymentAllocations")
                       .post("/payment-allocations")
                       .header("Authorization", " ${accessToken}")
                       .header("ServiceAuthorization", "${s2sToken}")
@@ -115,7 +115,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                       .check(status is 201))
                  .pause(10)
 
-  val getPaymentReferenceByCase = exec(http("PaymentAPI${service}_030_PayRefByCase")
+  val getPaymentReferenceByCase = exec(http("PaymentAPI${service}_010_PayRefByCase")
                             .get("/cases/${caseid}/payments")
                             .header("Authorization", " ${accessToken}")
                             .header("ServiceAuthorization", "${s2sToken}")
@@ -127,7 +127,7 @@ val paymentAPIURL=Environment.paymentAPIURL
   )
                        .pause(10)
 
-  val getPaymentGroupReferenceByCase = exec(http("PaymentAPI${service}_040_CCDViewPayment")
+  val getPaymentGroupReferenceByCase = exec(http("PaymentAPI${service}_020_CCDViewPayment")
                                  .get("/cases/${caseid}/paymentgroups")
                                  .header("Authorization", " ${accessToken}")
                                  .header("ServiceAuthorization", "${s2sToken}")
@@ -136,7 +136,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                                  .check(status is 201))
                             .pause(10)
 
-  val ccdViewPayment = exec(http("PaymentAPI${service}_040_CCDViewPayment")
+  val ccdViewPayment = exec(http("PaymentAPI${service}_020_CCDViewPayment")
                            .get("/payment-groups/fee-pay-apportion/${paymentreference}")
                            .header("Authorization", " ${accessToken}")
                            .header("ServiceAuthorization", "${s2sToken}")
