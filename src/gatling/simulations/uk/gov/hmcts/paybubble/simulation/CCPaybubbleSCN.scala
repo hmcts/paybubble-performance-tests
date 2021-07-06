@@ -35,13 +35,13 @@ class CCPaybubbleSCN extends Simulation {
 	val onlinePaymentHourlyTarget:Double = 220
 	val onlinePaymentRatePerSec = onlinePaymentHourlyTarget / 3600
 
-	val bulkscanHourlyTarget:Double = 38
+	val bulkscanHourlyTarget:Double = 79
 	val bulkscanRatePerSec = bulkscanHourlyTarget / 3600
 
-	val PBAHourlyTarget:Double = 91
+	val PBAHourlyTarget:Double = 186
 	val PBARatePerSec = PBAHourlyTarget / 3600
 
-	val telephonyHourlyTarget:Double = 8
+	val telephonyHourlyTarget:Double = 14
 	val telephonyRatePerSec = telephonyHourlyTarget / 3600
 
 	val httpProtocol = http
@@ -123,6 +123,8 @@ class CCPaybubbleSCN extends Simulation {
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
 			.exec(PaymentTransactionAPI.ccdViewPayment)
+			.exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
+			.exec(PaymentTransactionAPI.getPaymentByCase)
 			}
 
 	val processpaymentmatch_Scn = scenario("Payment Transaction ")
