@@ -65,6 +65,14 @@ object Feeders {
 
   ));
 
+  val OrdersFeeder = Iterator.continually(Map("service" -> ({
+    "Orders"
+  }),
+    "SignoutNumber" -> ({
+      "040"
+    })
+  ));
+
 
 
 

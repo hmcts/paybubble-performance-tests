@@ -23,8 +23,8 @@ object Environment {
  val DM_STORE_API_BASE_URI = "http://dm-store-perftest.service.core-compute-perftest.internal"
  //val S2S_SERVICE_NAME = "api_gw"
  val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service
- val IDAM_OAUTH_SECRET = ConfigFactory.load.getString("auth.clientSecret")
- val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ConfigFactory.load.getString("aat_service.pass")
+ val IDAM_OAUTH_SECRET = ""
+ val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ""
 
  val thinkTime = 10
 

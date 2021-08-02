@@ -2,9 +2,11 @@ package uk.gov.hmcts.paybubble.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, PayBubbleLogin, PaymentTransactionAPI}
+import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, OrdersScenario, PayBubbleLogin, PaymentTransactionAPI}
 import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
+
 import scala.concurrent.duration.DurationInt
+import scala.language.postfixOps
 import scala.util.Random
 
 class CCPaybubbleSCN extends Simulation {
@@ -23,7 +25,10 @@ class CCPaybubbleSCN extends Simulation {
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val usersFeeder = csv("users.csv").circular
 	val dcnnumberFeeder = csv("dcn_numbers.csv").circular
+	val CPOCaseIdFeeder =csv("CPO_case_ids.csv").circular
+	val orderReferencesFeeder =csv("order_references.csv").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
+	val UUID = Iterator.continually(Map("UUID" -> java.util.UUID.randomUUID.toString))
 
 	val rampUpDurationMins = 2
 	val rampDownDurationMins = 2
@@ -43,6 +48,15 @@ class CCPaybubbleSCN extends Simulation {
 
 	val telephonyHourlyTarget:Double = 14
 	val telephonyRatePerSec = telephonyHourlyTarget / 3600
+
+	val addOrderHourlyTarget:Double = 531
+	val addOrderRatePerSec = addOrderHourlyTarget / 3600
+
+	val createPaymentHourlyTarget:Double = 238
+	val createPaymentRatePerSec = createPaymentHourlyTarget / 3600
+
+	val getOrderHourlyTarget:Double = 65
+	val getOrderRatePerSec = getOrderHourlyTarget / 3600
 
 	val httpProtocol = http
 		.baseUrl(paymentAPIURL)
@@ -136,6 +150,30 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(PaymentByDCN.paymentProcess)
 		.exec(PaymentByDCN.PaymentProcessed)*/
 
+	//Orders scenarios
+
+	val addOrder_Scn = scenario("Add Order Scenario")
+		.feed(caseNumber)
+		.feed(Feeders.OrdersFeeder)
+		.exec(IDAMHelper.getIdamToken)
+		.exec(S2SHelper.S2SAuthToken)
+		.exec(OrdersScenario.AddOrder)
+
+	val createPayment_Scn = scenario("Create Payment Scenario")
+		.feed(UUID)
+		.feed(orderReferencesFeeder)
+		.feed(Feeders.OrdersFeeder)
+		.exec(IDAMHelper.getIdamToken)
+		.exec(S2SHelper.S2SAuthToken)
+		.exec(OrdersScenario.CreatePayment)
+
+	val getOrder_Scn = scenario("Get Order Scenario")
+		.feed(CPOCaseIdFeeder)
+		.feed(Feeders.OrdersFeeder)
+		.exec(IDAMHelper.getIdamToken)
+		.exec(S2SHelper.S2SAuthToken)
+		.exec(OrdersScenario.GetOrder)
+
 	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
 	//setUp(bulkscan_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)
@@ -178,16 +216,21 @@ class CCPaybubbleSCN extends Simulation {
 
 	/*setUp(
 		CCDViewPayment_Scn.inject(rampUsers(1) during (10)),
-		onlinePayment_Scn.inject(rampUsers(1) during (10)),
+		/*onlinePayment_Scn.inject(rampUsers(1) during (10)),
 		bulkscan_Scn.inject(rampUsers(1) during (10)),
 		PBA_Scn.inject(rampUsers(1) during (10)),
-		telephony_Scn.inject(rampUsers(1) during (10))
+		telephony_Scn.inject(rampUsers(1) during (10))*/
 		//onlineTelephony_Scn.inject(rampUsers(1) during (10))
 	).protocols(httpProtocol)*/
 
+	/*setUp(addOrder_Scn.inject(rampUsers(1) during (10)),
+				createPayment_Scn.inject(rampUsers(1) during (10)),
+				getOrder_Scn.inject(rampUsers(1) during (10))
+			 ).protocols(httpProtocol)*/
+
 	//setUp(datagendcn_Scn.inject(rampUsers(1) during (10))).protocols(bulkscanhttpProtocol)
 
-	setUp(CCDViewPayment_Scn.inject(
+	/*setUp(CCDViewPayment_Scn.inject(
 		rampUsersPerSec(0.00) to (CCDViewPaymentRatePerSec) during (rampUpDurationMins minutes),
 		constantUsersPerSec(CCDViewPaymentRatePerSec) during (testDurationMins minutes),
 		rampUsersPerSec(CCDViewPaymentRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
@@ -207,6 +250,21 @@ class CCPaybubbleSCN extends Simulation {
 		telephony_Scn.inject(rampUsersPerSec(0.00) to (telephonyRatePerSec) during (rampUpDurationMins minutes),
 			constantUsersPerSec(telephonyRatePerSec) during (testDurationMins minutes),
 			rampUsersPerSec(telephonyRatePerSec) to (0.00) during (rampDownDurationMins minutes))
+	)
+		.protocols(httpProtocol)*/
+
+	setUp(addOrder_Scn.inject(
+		rampUsersPerSec(0.00) to (addOrderRatePerSec) during (rampUpDurationMins minutes),
+		constantUsersPerSec(addOrderRatePerSec) during (testDurationMins minutes),
+		rampUsersPerSec(addOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		createPayment_Scn.inject(rampUsersPerSec(0.00) to (createPaymentRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(createPaymentRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(createPaymentRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+
+		getOrder_Scn.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
 	)
 		.protocols(httpProtocol)
 }
