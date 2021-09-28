@@ -37,6 +37,22 @@ object  S2SHelper {
         session
       })*/
 
+  val RefundsS2SAuthToken =
+
+    exec(http("PaymentAPIToken_020_GetServiceToken")
+      .post(S2S_BASE_URI + "/lease")
+      .header("Content-Type", "application/json")
+      .body(StringBody(
+        """{
+       "microservice": "payment_app"
+        }"""
+      )).asJson
+      .check(bodyString.saveAs("s2sTokenRefund"))
+      // .check(bodyString.saveAs("responseBody"))
+      )
+
+    .pause(5)
+
 
 
 

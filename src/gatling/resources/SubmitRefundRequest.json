@@ -1,0 +1,8 @@
+{
+  "ccd_case_number": "${case_number}",
+  "fee_ids": "${fee_id}",
+  "payment_reference": "${payment_reference}",
+  "refund_reason": "RR001",
+  "refund_amount": 50.25
+
+}

@@ -153,4 +153,13 @@ val paymentAPIURL=Environment.paymentAPIURL
                 .header("accept", "*/*")
                 .check(status is 200))
                 .pause(10)
+
+  val getPaymentByReference = exec(http("PaymentAPI_GetPaymentFeeDetails")
+                .get("/payment-groups/${order_reference}")
+                .header("Authorization", "Bearer ${accessToken}")
+                .header("ServiceAuthorization", "${s2sToken}")
+                .header("Content-Type", "application/json")
+                .check(jsonPath("$.fees[0].id").saveAs("fee_id")))
+
+  
 }
