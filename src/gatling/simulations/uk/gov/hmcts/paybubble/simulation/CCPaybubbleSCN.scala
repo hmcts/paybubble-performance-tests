@@ -315,5 +315,5 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)*/
 
-  setUp(approveRefund.inject(rampUsers(1) during (5 minutes))).protocols(httpProtocol)
+  setUp(rejectRefund.inject(rampUsers(1) during (5 minutes))).protocols(httpProtocol)
 }
