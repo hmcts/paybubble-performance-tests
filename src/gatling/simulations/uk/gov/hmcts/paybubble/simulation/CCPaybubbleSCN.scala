@@ -202,6 +202,13 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(S2SHelper.RefundsS2SAuthToken)
     .exec(Refunds.approveRefund)
 
+	val rejectRefund = scenario("Reject a Refund")
+		.feed(refundIDsFeeder)
+		.feed(refundsUsersFeeder)
+		.exec(IDAMHelper.refundsGetIdamToken)
+		.exec(S2SHelper.RefundsS2SAuthToken)
+		.exec(Refunds.rejectRefund)
+
   val getRefunds = scenario("Get All Refunds Scenario")
     .feed(refundsUsersFeeder)
     .exec(IDAMHelper.refundsGetIdamToken)

@@ -24,6 +24,15 @@ object Refunds {
       .formParam("reviewer-action", "APPROVE")
       .body(ElFileBody("ApproveRefundRequest.json")))
 
+  val rejectRefund = exec(http("RejectRefund")
+    .patch(Environment.refundsUrl + "/refund/${refundId}/action/REJECT")
+    .header("Authorization", "Bearer ${accessTokenRefund}")
+    .header("ServiceAuthorization", "${s2sTokenRefund}")
+    .header("Content-Type", "application/json")
+    .formParam("reference", "${refundId}")
+    .formParam("reviewer-action", "REJECT")
+    .body(ElFileBody("RejectRefundRequest.json")))
+
   val getRefunds = exec(http("GetRefunds")
     .get(Environment.refundsUrl + "/refund?status=sent%20for%20approval")
       .header("Authorization", "Bearer ${accessTokenRefund}")
