@@ -28,6 +28,7 @@ class CCPaybubbleSCN extends Simulation {
 	val CPOCaseIdFeeder =csv("CPO_case_ids.csv").circular
 	val orderReferencesFeeder =csv("order_references.csv").circular
   val refundsUsersFeeder = csv("RefundUsers.csv").circular
+  val refundIDsFeeder = csv("RefundData.csv").queue
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 	val UUID = Iterator.continually(Map("UUID" -> java.util.UUID.randomUUID.toString))
 
@@ -194,6 +195,13 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(S2SHelper.RefundsS2SAuthToken)
 		.exec(Refunds.submitRefund)
 
+  val approveRefund = scenario("Approve a Refund")
+    .feed(refundIDsFeeder)
+    .feed(refundsUsersFeeder)
+    .exec(IDAMHelper.refundsGetIdamToken)
+		.exec(S2SHelper.RefundsS2SAuthToken)
+    .exec(Refunds.approveRefund)
+
   val getRefunds = scenario("Get All Refunds Scenario")
     .feed(refundsUsersFeeder)
     .exec(IDAMHelper.refundsGetIdamToken)
@@ -300,5 +308,5 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)*/
 
-  setUp(createPaymentAndRefund.inject(rampUsers(10) during (5 minutes))).protocols(httpProtocol)
+  setUp(approveRefund.inject(rampUsers(1) during (5 minutes))).protocols(httpProtocol)
 }
