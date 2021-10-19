@@ -181,19 +181,21 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(OrdersScenario.GetOrder)
 
   val createPaymentAndRefund = scenario("Create Payment and Refund E2E Scenario")
-		.feed(UUID)
-    .feed(caseNumber)
-		.feed(orderReferencesFeeder)
-		.feed(Feeders.OrdersFeeder)
-		.exec(IDAMHelper.getIdamToken)
-		.exec(S2SHelper.S2SAuthToken)
-    .exec(OrdersScenario.AddOrder)
-    .exec(PaymentTransactionAPI.getPaymentByReference)
-		.exec(OrdersScenario.CreatePayment)
-    .feed(refundsUsersFeeder)
-    .exec(IDAMHelper.refundsGetIdamToken)
-		.exec(S2SHelper.RefundsS2SAuthToken)
-		.exec(Refunds.submitRefund)
+    .repeat(5) {
+      feed(UUID)
+      .feed(caseNumber)
+      .feed(orderReferencesFeeder)
+      .feed(Feeders.OrdersFeeder)
+      .exec(IDAMHelper.getIdamToken)
+      .exec(S2SHelper.S2SAuthToken)
+      .exec(OrdersScenario.AddOrder)
+      .exec(PaymentTransactionAPI.getPaymentByReference)
+      .exec(OrdersScenario.CreatePayment)
+      .feed(refundsUsersFeeder)
+      .exec(IDAMHelper.refundsGetIdamToken)
+      .exec(S2SHelper.RefundsS2SAuthToken)
+      .exec(Refunds.submitRefund)
+    }
 
   val approveRefund = scenario("Approve a Refund")
     .feed(refundIDsFeeder)
@@ -315,5 +317,5 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)*/
 
-  setUp(rejectRefund.inject(rampUsers(1) during (5 minutes))).protocols(httpProtocol)
+  setUp(createPaymentAndRefund.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
 }

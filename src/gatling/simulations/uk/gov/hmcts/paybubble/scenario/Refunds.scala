@@ -13,7 +13,17 @@ object Refunds {
       .header("Authorization", "Bearer ${accessTokenRefund}")
       .header("ServiceAuthorization", "${s2sTokenRefund}")
       .header("Content-Type", "application/json")
-      .body(ElFileBody("SubmitRefundRequest.json")))
+      .body(ElFileBody("SubmitRefundRequest.json"))
+      .check(jsonPath("$..refund_reference").saveAs("refundId"))
+    )
+    .exec {session =>
+      val fw = new BufferedWriter(new FileWriter("src/gatling/resources/RefundData.csv", true))
+      try {
+        fw.write(session("refundId").as[String]+"\r\n")
+      }
+      finally fw.close()
+      session
+    }
 
   val approveRefund = exec(http("ApproveRefund")
     .patch(Environment.refundsUrl + "/refund/${refundId}/action/APPROVE")
