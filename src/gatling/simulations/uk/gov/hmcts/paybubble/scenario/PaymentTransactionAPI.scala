@@ -73,7 +73,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                 .body(ElFileBody("PaymentPayload.json"))
                 //  .check(status is 201)
                  )
-            // .pause(30)
+            .pause(7)
 
       // .exec(session => {
       //   println("the case id is "+session("caseId").as[String])
