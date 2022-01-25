@@ -66,12 +66,14 @@ val paymentAPIURL=Environment.paymentAPIURL
                   .header("accept", "*/*")
                   .header("return-url", "https://localhost")
                   //.header("service-callback-url", "http://div-cos-perftest.service.core-compute-perftest.internal/payment-update")
-                 .body(StringBody(
-                   "{\n  \"amount\": 0.01,\n  \"case_reference\": \"string\",\n  \"ccd_case_number\": \"string\",\n  \"currency\": \"GBP\",\n  \"description\": \"string\",\n  \"fees\": [\n    {\n      \"calculated_amount\": 0.01,\n      \"code\": \"string\",\n      \"version\": \"string\",\n      \"volume\": 1\n    }\n  ],\n  \"language\": \"string\",\n  \"service\": \"DIVORCE\",\n  \"site_id\": \"AA08\"\n}"
+                //  .body(StringBody(
+                //    "{\n  \"amount\": 0.01,\n  \"case_reference\": \"string\",\n  \"ccd_case_number\": \"string\",\n  \"currency\": \"GBP\",\n  \"description\": \"string\",\n  \"fees\": [\n    {\n      \"calculated_amount\": 0.01,\n      \"code\": \"string\",\n      \"version\": \"string\",\n      \"volume\": 1\n    }\n  ],\n  \"language\": \"string\",\n  \"service\": \"DIVORCE\",\n  \"site_id\": \"AA08\"\n}"
+                //  )
+                //  ).asJson
+                .body(ElFileBody("PaymentPayload.json"))
+                //  .check(status is 201)
                  )
-                 ).asJson
-                 .check(status is 201))
-            .pause(30)
+            // .pause(30)
 
   val telephony = exec(http("PaymentAPI${service}_020_TelePayments")
                            .post("/payment-groups/${paymentgroupref}/telephony-card-payments")
