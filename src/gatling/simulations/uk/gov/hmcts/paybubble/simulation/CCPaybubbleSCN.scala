@@ -124,7 +124,7 @@ class CCPaybubbleSCN extends Simulation {
 	  	.repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(9799) {
+        .repeat(19536) {
           feed(casesForDataFeeder)
           .exec(PaymentTransactionAPI.onlinePayment)
         }
@@ -322,5 +322,5 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)*/
 
-  setUp(onlinePayment_Scn.inject(rampUsers(100) during (10 minutes))).protocols(httpProtocol)
+  setUp(onlinePayment_Scn.inject(rampUsers(50) during (10 minutes))).protocols(httpProtocol)
 }
