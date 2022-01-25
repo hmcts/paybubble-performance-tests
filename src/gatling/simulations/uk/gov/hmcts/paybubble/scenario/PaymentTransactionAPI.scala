@@ -75,6 +75,11 @@ val paymentAPIURL=Environment.paymentAPIURL
                  )
             // .pause(30)
 
+      // .exec(session => {
+      //   println("the case id is "+session("caseId").as[String])
+      //   session
+      // })
+
   val telephony = exec(http("PaymentAPI${service}_020_TelePayments")
                            .post("/payment-groups/${paymentgroupref}/telephony-card-payments")
                            .header("Authorization", "${accessToken}")
