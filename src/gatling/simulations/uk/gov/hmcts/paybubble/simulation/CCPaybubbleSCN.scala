@@ -124,7 +124,31 @@ class CCPaybubbleSCN extends Simulation {
 	  	.repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(19536) {
+        .repeat(4459) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(4459) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(4459) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(4459) {
           feed(casesForDataFeeder)
           .exec(PaymentTransactionAPI.onlinePayment)
         }
