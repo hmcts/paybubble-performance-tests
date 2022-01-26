@@ -1,0 +1,32 @@
+{
+  "account_number": "PBA0082848",
+  "amount": 218,
+  "case_reference": "string",
+  "ccd_case_number": "${caseId}",
+  "currency": "GBP",
+  "customer_reference": "string",
+  "description": "string",
+  "fees": [
+    {
+       
+      "calculated_amount": 215,
+       
+      "code": "FEE0226",
+       
+      "version": 3,
+      "volume": 1
+    },
+{
+       
+      "calculated_amount": 3,
+       
+      "code": "FEE0546",
+       
+      "version": 1,
+      "volume": 2
+    }
+  ],
+  "organisation_name": "string",
+  "service": "PROBATE",
+  "site_id": "AA08"
+}

@@ -45,12 +45,11 @@ val paymentAPIURL=Environment.paymentAPIURL
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
-    .body(StringBody(
-      "{\n  \"account_number\": \"PBA0082848\",\n  \"amount\": 2055,\n  \"case_reference\": \"string\",\n  \"ccd_case_number\": \"${case_id}\",\n  \"currency\": \"GBP\",\n  \"customer_reference\": \"string\",\n  \"description\": \"string\",\n  \"fees\": [\n    {\n       \n      \"calculated_amount\": 0,\n       \n      \"code\": \"FEE0313\",\n       \n      \"version\": 1,\n      \"volume\": 1\n    }\n  ],\n  \"organisation_name\": \"string\",\n  \"service\": \"IAC\",\n  \"site_id\": \"BFA1\"\n}"
+    // .body(StringBody("{\n  \"account_number\": \"PBA0082848\",\n  \"amount\": 2055,\n  \"case_reference\": \"string\",\n  \"ccd_case_number\": \"${case_id}\",\n  \"currency\": \"GBP\",\n  \"customer_reference\": \"string\",\n  \"description\": \"string\",\n  \"fees\": [\n    {\n       \n      \"calculated_amount\": 0,\n       \n      \"code\": \"FEE0313\",\n       \n      \"version\": 1,\n      \"volume\": 1\n    }\n  ],\n  \"organisation_name\": \"string\",\n  \"service\": \"IAC\",\n  \"site_id\": \"BFA1\"\n}")).asJson
+    .body(ElFileBody("CreditPaymentPayload.json"))
+    .check(status is 201)
     )
-    ).asJson
-    .check(status is 201))
-    .pause(10)
+    .pause(7)
 
   val reconciliationPayments = exec(http("PaymentAPI${service}_030_ReconciliationPayments")
     .get(s"/reconciliation-payments?end_date=${current_date}&start_date=${current_date}")
@@ -73,7 +72,7 @@ val paymentAPIURL=Environment.paymentAPIURL
                 .body(ElFileBody("PaymentPayload.json"))
                 //  .check(status is 201)
                  )
-            .pause(7)
+            .pause(5)
 
       // .exec(session => {
       //   println("the case id is "+session("caseId").as[String])

@@ -154,6 +154,67 @@ class CCPaybubbleSCN extends Simulation {
         }
 			}
 
+   val PBADataLoad_Scn = scenario("Online Payments Scenario ")
+      .feed(caseNumber)
+      .feed(Feeders.OnlinePaymentFeeder)
+	  	.repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.PBA_IAC)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(2800) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.onlinePayment)
+        }
+			}
+  
+
 	val PBA_Scn = scenario("Pay By Account Scenario ")
   		.feed(feederpba).feed(feederpbaiac).feed(Feeders.PBAFeeder)
 	  	.repeat(1) {//25
@@ -346,5 +407,6 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)*/
 
-  setUp(onlinePayment_Scn.inject(rampUsers(50) during (10 minutes))).protocols(httpProtocol)
+  // setUp(onlinePayment_Scn.inject(rampUsers(1) during (10 minutes))).protocols(httpProtocol)
+  setUp(PBADataLoad_Scn.inject(rampUsers(50) during (10 minutes))).protocols(httpProtocol)
 }
