@@ -160,7 +160,7 @@ class CCPaybubbleSCN extends Simulation {
 	  	.repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
           .exec(PaymentTransactionAPI.PBA_IAC)
         }
@@ -168,49 +168,73 @@ class CCPaybubbleSCN extends Simulation {
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
       .repeat(1) {//200
         exec(IDAMHelper.getIdamToken)
         .exec(S2SHelper.S2SAuthToken)
-        .repeat(2800) {
+        .repeat(1070) {
           feed(casesForDataFeeder)
-          .exec(PaymentTransactionAPI.onlinePayment)
+          .exec(PaymentTransactionAPI.PBA_IAC)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(1070) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.PBA_IAC)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(1070) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.PBA_IAC)
+        }
+			}
+      .repeat(1) {//200
+        exec(IDAMHelper.getIdamToken)
+        .exec(S2SHelper.S2SAuthToken)
+        .repeat(1070) {
+          feed(casesForDataFeeder)
+          .exec(PaymentTransactionAPI.PBA_IAC)
         }
 			}
   
