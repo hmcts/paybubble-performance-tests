@@ -301,7 +301,7 @@ class CCPaybubbleSCN extends Simulation {
 
   //************** Main Scenario for perf tests **************//
 
-	setUp(
+	/*setUp(
     addOrder_Scn.inject(
       rampUsersPerSec(0.00) to (addOrderRatePerSec) during (rampUpDurationMins minutes),
       constantUsersPerSec(addOrderRatePerSec) during (testDurationMins minutes),
@@ -320,6 +320,6 @@ class CCPaybubbleSCN extends Simulation {
 			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
 	)
 		.protocols(httpProtocol)
-
-  // setUp(createPaymentAndRefund.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
+*/
+  setUp(addOrder_Scn.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
 }
