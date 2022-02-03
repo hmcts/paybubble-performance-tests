@@ -321,5 +321,6 @@ class CCPaybubbleSCN extends Simulation {
 	)
 		.protocols(httpProtocol)
 */
-  setUp(addOrder_Scn.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
+
+  setUp(addOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 }
