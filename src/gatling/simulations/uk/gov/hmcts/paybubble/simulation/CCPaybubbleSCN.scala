@@ -269,7 +269,7 @@ class CCPaybubbleSCN extends Simulation {
 			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
 			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
 	)
-		.protocols(httpProtocol)*/
-
+		.protocols(httpProtocol)
+*/
   setUp(addOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 }
