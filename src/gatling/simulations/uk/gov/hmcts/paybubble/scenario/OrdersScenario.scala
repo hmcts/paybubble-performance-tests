@@ -15,18 +15,20 @@ object OrdersScenario {
     .header("accept", "*/*")
     .body(StringBody(
       "{\n  \"ccd_case_number\": \"${case_number}\",\n  \"case_reference\": \"string\",\n  \"case_type\": \"FinancialRemedyMVP2\",\n  \"fees\": [\n    {\n      \"calculated_amount\": 50.25,\n      \"code\": \"FEE0226\",\n      \"version\": \"1\",\n      \"volume\": 1\n    }\n  ]\n}"
-    )
+    ) //${case_number}
     ).asJson
-    .check(status is 201))
-    /*.check(jsonPath("$..order_reference").saveAs("orderRef")))
-    .exec {session =>
-      val fw = new BufferedWriter(new FileWriter("src/gatling/resources/order_references.csv", true))
-      try {
-        fw.write(session("orderRef").as[String]+"\r\n")
-      }
-      finally fw.close()
-      session
-    }*/
+    .check(status is 201)
+    .check(jsonPath("$..order_reference").saveAs("order_reference")))
+    // .check(jsonPath("$..order_reference").saveAs("orderRef"))
+    // )
+    // .exec {session =>
+    //   val fw = new BufferedWriter(new FileWriter("src/gatling/resources/order_references.csv", true))
+    //   try {
+    //     fw.write(session("orderRef").as[String]+"\r\n")
+    //   }
+    //   finally fw.close()
+    //   session
+    // }
     .pause(10)
 
   val CreatePayment = exec(http("PaymentAPI${service}_020_CreatePayment")
@@ -39,8 +41,8 @@ object OrdersScenario {
     .header("accept", "*/*")
     .body(StringBody(
       "{\n  \"account_number\": \"PBA0082848\",\n  \"amount\": 50.25,\n  \"currency\": \"GBP\",\n  \"customer_reference\": \"string\"\n}"
-    )
-    ).asJson
+    )).asJson
+    .check(jsonPath("$..payment_reference").saveAs("payment_reference"))
     .check(status is 201))
     .pause(10)
 

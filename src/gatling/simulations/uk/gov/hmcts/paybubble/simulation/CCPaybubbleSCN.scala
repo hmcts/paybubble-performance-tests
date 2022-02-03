@@ -2,9 +2,9 @@ package uk.gov.hmcts.paybubble.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, OrdersScenario, PayBubbleLogin, PaymentTransactionAPI}
-import uk.gov.hmcts.paybubble.util.{Environment, IDAMHelper, S2SHelper}
-
+import io.gatling.core.scenario._
+import uk.gov.hmcts.paybubble.scenario._
+import uk.gov.hmcts.paybubble.util._
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.Random
@@ -27,6 +27,8 @@ class CCPaybubbleSCN extends Simulation {
 	val dcnnumberFeeder = csv("dcn_numbers.csv").circular
 	val CPOCaseIdFeeder =csv("CPO_case_ids.csv").circular
 	val orderReferencesFeeder =csv("order_references.csv").circular
+  val refundsUsersFeeder = csv("RefundUsers.csv").circular
+  val refundIDsFeeder = csv("RefundData.csv").queue
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 	val UUID = Iterator.continually(Map("UUID" -> java.util.UUID.randomUUID.toString))
 
@@ -76,7 +78,8 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(S2SHelper.S2SAuthToken)
 
 	val datagendcn_Scn = scenario("Data Gen DCN ")
-		.feed(feeder).feed(Feeders.DataGenBulkScanFeeder)
+		.feed(feeder)
+    .feed(Feeders.DataGenBulkScanFeeder)
 	  	.repeat(1) {
 			exec(S2SHelper.S2SAuthToken)
 			.exec(DCNGenerator.generateDCN)
@@ -85,7 +88,10 @@ class CCPaybubbleSCN extends Simulation {
 	val telephony_Scn = scenario("Offline Telephony Payments Scenario ")
   		.feed(feedertelephone).feed(Feeders.TelephoneFeeder)
 	  	.repeat(1) {//40
-			exec(IDAMHelper.getIdamToken).exec(S2SHelper.S2SAuthToken).exec(PaymentTransactionAPI.getPaymentGroupReference).exec(PaymentTransactionAPI.telephony)
+			exec(IDAMHelper.getIdamToken)
+      .exec(S2SHelper.S2SAuthToken)
+      .exec(PaymentTransactionAPI.getPaymentGroupReference)
+      .exec(PaymentTransactionAPI.telephony)
 			.pause(10)
 			}
 
@@ -173,6 +179,46 @@ class CCPaybubbleSCN extends Simulation {
 		.exec(IDAMHelper.getIdamToken)
 		.exec(S2SHelper.S2SAuthToken)
 		.exec(OrdersScenario.GetOrder)
+
+  val createPaymentAndRefund = scenario("Create Payment and Refund E2E Scenario")
+    .repeat(5) {
+      feed(UUID)
+      .feed(caseNumber)
+      .feed(orderReferencesFeeder)
+      .feed(Feeders.OrdersFeeder)
+      .exec(IDAMHelper.getIdamToken)
+      .exec(S2SHelper.S2SAuthToken)
+      .exec(OrdersScenario.AddOrder)
+      .exec(PaymentTransactionAPI.getPaymentByReference)
+      .exec(OrdersScenario.CreatePayment)
+      .feed(refundsUsersFeeder)
+      .exec(IDAMHelper.refundsGetIdamToken)
+      .exec(S2SHelper.RefundsS2SAuthToken)
+      .exec(Refunds.submitRefund)
+    }
+
+  val approveRefund = scenario("Approve a Refund")
+    .feed(refundIDsFeeder)
+    .feed(refundsUsersFeeder)
+    .exec(IDAMHelper.refundsGetIdamToken)
+		.exec(S2SHelper.RefundsS2SAuthToken)
+    .exec(Refunds.approveRefund)
+
+	val rejectRefund = scenario("Reject a Refund")
+		.feed(refundIDsFeeder)
+		.feed(refundsUsersFeeder)
+		.exec(IDAMHelper.refundsGetIdamToken)
+		.exec(S2SHelper.RefundsS2SAuthToken)
+		.exec(Refunds.rejectRefund)
+
+  val getRefunds = scenario("Get All Refunds Scenario")
+    .feed(refundsUsersFeeder)
+    .exec(IDAMHelper.refundsGetIdamToken)
+		.exec(S2SHelper.RefundsS2SAuthToken)
+    .repeat(10) {
+      exec(Refunds.getRefunds)
+    }
+
 
 	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
@@ -268,8 +314,13 @@ class CCPaybubbleSCN extends Simulation {
 		getOrder_Scn.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
 			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
 			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
+
+    createPaymentAndRefund.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
 	)
 		.protocols(httpProtocol)
 */
+
   setUp(addOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 }
