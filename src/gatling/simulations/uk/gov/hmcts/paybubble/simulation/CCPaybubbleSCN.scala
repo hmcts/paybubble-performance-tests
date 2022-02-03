@@ -301,21 +301,25 @@ class CCPaybubbleSCN extends Simulation {
 
   //************** Main Scenario for perf tests **************//
 
-	/*setUp(
-    // addOrder_Scn.inject(
-		// rampUsersPerSec(0.00) to (addOrderRatePerSec) during (rampUpDurationMins minutes),
-		// constantUsersPerSec(addOrderRatePerSec) during (testDurationMins minutes),
-		// rampUsersPerSec(addOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
+	setUp(
+    addOrder_Scn.inject(
+      rampUsersPerSec(0.00) to (addOrderRatePerSec) during (rampUpDurationMins minutes),
+      constantUsersPerSec(addOrderRatePerSec) during (testDurationMins minutes),
+      rampUsersPerSec(addOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
 
 		createPayment_Scn.inject(rampUsersPerSec(0.00) to (createPaymentRatePerSec) during (rampUpDurationMins minutes),
 			constantUsersPerSec(createPaymentRatePerSec) during (testDurationMins minutes),
 			rampUsersPerSec(createPaymentRatePerSec) to (0.00) during (rampDownDurationMins minutes)),
 
-		// getOrder_Scn.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
-		// 	constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
-		// 	rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
-	)
-		.protocols(httpProtocol)*/
+		getOrder_Scn.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
 
-  setUp(createPaymentAndRefund.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
+    createPaymentAndRefund.inject(rampUsersPerSec(0.00) to (getOrderRatePerSec) during (rampUpDurationMins minutes),
+			constantUsersPerSec(getOrderRatePerSec) during (testDurationMins minutes),
+			rampUsersPerSec(getOrderRatePerSec) to (0.00) during (rampDownDurationMins minutes))
+	)
+		.protocols(httpProtocol)
+
+  // setUp(createPaymentAndRefund.inject(rampUsers(5) during (1 minutes))).protocols(httpProtocol)
 }
