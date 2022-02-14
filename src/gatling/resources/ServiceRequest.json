@@ -1,0 +1,24 @@
+{
+  "call_back_url": "http://callBack/",
+  "case_payment_request": {
+    "action": "demo_test",
+    "responsible_party": "demo_test_party"
+  },
+  "case_reference": "demo_ref",
+  "ccd_case_number": "4562345678900019",
+  "fees": [
+    {
+      "calculated_amount": 215,
+      "code": "FEE0226",
+      "version": "3",
+      "volume": 1
+    },
+    {
+      "calculated_amount": 3,
+      "code": "FEE0546",
+      "version": "1",
+      "volume": 2
+    }
+  ],
+  "hmcts_org_id": "ABA6"
+}

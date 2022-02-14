@@ -1,11 +1,11 @@
 package uk.gov.hmcts.paybubble.scenario
 
+import java.io.{BufferedWriter, FileWriter}
+
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
-import java.io.{BufferedWriter, FileWriter}
-
-object OrdersScenario {
+object Ways2Pay {
 
   val AddOrder = exec(http("PaymentAPI${service}_010_AddOrder")
     .post("/order")
@@ -31,27 +31,18 @@ object OrdersScenario {
      }
     .pause(10)
 
-  val CreatePayment = exec(http("PaymentAPI${service}_020_CreatePayment")
-    .post("/order/${order_reference}/credit-account-payment")
-    .header("Authorization", " ${accessToken}")
+
+  val ServiceRequest = exec(http("PaymentAPI${service}_010_ServiceRequest")
+    .post("/service-request")
+    .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
-    .header("idempotency_key", "${UUID}")
-    .header("order-reference", "${order_reference}")
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
-    .body(StringBody(
-      "{\n  \"account_number\": \"PBA0082848\",\n  \"amount\": 50.25,\n  \"currency\": \"GBP\",\n  \"customer_reference\": \"string\"\n}"
-    )).asJson
-    .check(jsonPath("$..payment_reference").saveAs("payment_reference"))
-    .check(status is 201))
-    .pause(10)
+    .body(ElFileBody("ServiceRequest.json"))
+    .check(status is 201)
+  )
 
-  val GetOrder = exec(http("PaymentAPI${service}_030_GetOrder")
-    .get("/case-payment-orders?case_ids=${CPO_case_id}")
-    .header("Authorization", "Bearer ${accessToken}")
-    .header("ServiceAuthorization", "${s2sToken}")
-    .header("accept", "*/*")
-    .check(status is 200))
-    .pause(10)
+
+
 
 }
