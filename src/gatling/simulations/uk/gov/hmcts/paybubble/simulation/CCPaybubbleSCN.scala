@@ -220,16 +220,29 @@ class CCPaybubbleSCN extends Simulation {
     }
 
 
-	val Ways2Pay_Scn = scenario("Way2Pay Scenario ")
+	val Ways2PayCC_Scn = scenario("Way2Pay Credit Card Scenario ")
 		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
 		.repeat(1) {//271
 			exec(IDAMHelper.getIdamToken)
 				.exec(S2SHelper.S2SAuthToken)
 				.exec(Ways2Pay.ServiceRequest)
-  			.exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
+				.exec(Ways2Pay.W2PPBAPaymentsGET)
+  			.exec(Ways2Pay.getPaymentGroupReferenceByCase)
+				.exec(Ways2Pay.W2PCreditcardPayment)
+				.exec(Ways2Pay.W2PCardPaymentStatusGET)
 		}
 
+	val Ways2PayPBA_Scn = scenario("Way2Pay Pay By Account Scenario ")
+		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
+		.repeat(1) {//271
+			exec(IDAMHelper.getIdamToken)
+				.exec(S2SHelper.S2SAuthToken)
+				.exec(Ways2Pay.ServiceRequest)
+				.exec(Ways2Pay.W2PPBAPaymentsGET)
+				.exec(Ways2Pay.getPaymentGroupReferenceByCase)
+				.exec(Ways2Pay.W2PPBAPaymentsPOST)
 
+		}
 	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
 	//setUp(bulkscan_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)
@@ -335,6 +348,11 @@ class CCPaybubbleSCN extends Simulation {
  // setUp(addOrder_Scn.inject(rampUsers(10) during (1 minutes))).protocols(httpProtocol)
 	//Get Payment History - to be created and added
 	//create payment needs to be updated the new calls PBA and Credit Card
-	setUp(Ways2Pay_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
-//		setUp(getOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+//	setUp(createPayment_Scn .inject(rampUsers(2) during (1 minutes))).protocols(httpProtocol)
+	//		setUp(getOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+
+	//Ways to Pay
+//	setUp(Ways2PayCC_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+	setUp(Ways2PayPBA_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+
 }
