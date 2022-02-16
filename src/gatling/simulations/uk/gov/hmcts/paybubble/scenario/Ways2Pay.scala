@@ -39,6 +39,7 @@ object Ways2Pay {
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
     .body(ElFileBody("ServiceRequest.json"))
+    .check(jsonPath("$..service_request_reference").saveAs("service_request_reference"))
     .check(status is 201)
   )
 
@@ -63,7 +64,8 @@ object Ways2Pay {
     .check(status is 200))
 
   val W2PCreditcardPayment = exec(http("Ways2Pay_060_W2PCreditCardPaymentPOST")
-    .post("/service-request/2022-1644834768896/card-payments") //serviceRequestRef
+   // .post("/service-request/2022-1644834768896/card-payments") //serviceRequestRef
+    .post("/service-request/${service_request_reference}/card-payments")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
@@ -84,10 +86,11 @@ object Ways2Pay {
  // )*/
 
   val W2PPBAPaymentsPOST = exec(http("Ways2Pay_060_W2PPBAPaymentsPOST")
-    .post("/service-request/2022-1644853755337/pba-payments") //serviceRequestRef
+   // .post("/service-request/2022-1644853755337/pba-payments") //serviceRequestRef
+    .post("/service-request/${service_request_reference}/pba-payments")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
-    .header("idempotency_key", "3482d6b2-8e7a-11ec-b909-0242ac120002")
+    .header("idempotency_key", "${UUID}")
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
     .header("return-url", "https://localhost")
