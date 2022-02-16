@@ -29,7 +29,7 @@ class CCPaybubbleSCN extends Simulation {
 	val orderReferencesFeeder =csv("order_references.csv").circular
   val refundsUsersFeeder = csv("RefundUsers.csv").circular
   val refundIDsFeeder = csv("RefundData.csv").queue
-	val refundIDsFeeder = csv("InternalRef.csv").circular
+	val internalFeeder = csv("InternalRef.csv").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
 	val UUID = Iterator.continually(Map("UUID" -> java.util.UUID.randomUUID.toString))
 
@@ -222,7 +222,7 @@ class CCPaybubbleSCN extends Simulation {
 
 
 	val Ways2PayCC_Scn = scenario("Way2Pay Credit Card Scenario ")
-		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
+		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).feed(internalFeeder)
 		.repeat(1) {//271
 			exec(IDAMHelper.getIdamToken)
 				.exec(S2SHelper.S2SAuthToken)

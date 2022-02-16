@@ -102,7 +102,7 @@ object Ways2Pay {
 
   //Get card payment status by Internal Reference
   val W2PCardPaymentStatusGET = exec(http("Ways2Pay_070_W2PCardPaymentStatusGET")
-    .get("/card-payments/2c07ae17-683c-4aa3-b985-a3739eb9eca2/status")//Internal Ref
+    .get("/card-payments/${InternalRef}/status")//Internal Ref
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
