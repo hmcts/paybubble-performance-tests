@@ -4,10 +4,41 @@ import java.io.{BufferedWriter, FileWriter}
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import uk.gov.hmcts.paybubble.util.Environment
 
 object Ways2Pay {
 
+<<<<<<< HEAD
   //This POST's a new service Request for W2P
+=======
+  val thinkTime = Environment.thinkTime
+
+  val AddOrder = exec(http("Ways2Pay_010_AddOrder")
+    .post("/order")
+    .header("Authorization", "${accessToken}")
+    .header("ServiceAuthorization", "${s2sToken}")
+    .header("Content-Type", "application/json")
+    .header("accept", "*/*")
+    .body(StringBody(
+      "{\n  \"ccd_case_number\": \"${case_number}\",\n  \"case_reference\": \"string\",\n  \"case_type\": \"FinancialRemedyMVP2\",\n  \"fees\": [\n    {\n      \"calculated_amount\": 50.25,\n      \"code\": \"FEE0226\",\n      \"version\": \"1\",\n      \"volume\": 1\n    }\n  ]\n}"
+    ) //${case_number}
+    ).asJson
+    .check(status is 201)
+    .check(jsonPath("$..order_reference").saveAs("order_reference"))
+     .check(jsonPath("$..order_reference").saveAs("orderRef"))
+     )
+     .exec {session =>
+       val fw = new BufferedWriter(new FileWriter("src/gatling/resources/order_references.csv", true))
+       try {
+         fw.write(session("orderRef").as[String]+"\r\n")
+       }
+       finally fw.close()
+       session
+     }
+    .pause(thinkTime)
+
+  //This POSTs a new service Request
+>>>>>>> 141193099d63aae4cf1e2526b530bdd97deb790b
   val ServiceRequest = exec(http("Ways2Pay_030_ServiceRequestPOST")
     .post("/service-request")
     .header("Authorization", "${accessToken}")
@@ -18,6 +49,7 @@ object Ways2Pay {
     .check(jsonPath("$..service_request_reference").saveAs("service_request_reference"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
   //On the PayNow Page this does a Get payments for a PBA account.  Currently we only have PBAFUNC12345 setup
   val W2PPBAPaymentsGET = exec(http("Ways2Pay_040_W2PPBAPaymentsGET")
@@ -29,6 +61,7 @@ object Ways2Pay {
     .header("return-url", "https://localhost")
     .check(status is 200)
   )
+    .pause(thinkTime)
 
   //Get payment groups for a case by CaseID
   val getPaymentGroupReferenceByCase = exec(http("Ways2Pay_050_PaymentGroupReferenceByCaseGET")
@@ -38,6 +71,7 @@ object Ways2Pay {
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
     .check(status is 200))
+    .pause(thinkTime)
 
 
   //creates an online card payment against the Service Request which was raised in the ServiceRequest request earlier
@@ -52,6 +86,7 @@ object Ways2Pay {
     .body(ElFileBody("WaystoPayCCPayment.json"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
 
 /*
@@ -63,8 +98,10 @@ object Ways2Pay {
 //    .check(status is 200)
  // )*/
 
+
   ////creates credit account payment via PBA  against the Service Request which was raised in the ServiceRequest request earlier
-  val W2PPBAPaymentsPOST = exec(http("Ways2Pay_060_W2PPBAPaymentsPOST")
+  val W2PPBAPaymentsPOST = exec(http("Ways2Pay_070_W2PPBAPaymentsPOST")
+
    // .post("/service-request/2022-1644853755337/pba-payments") //serviceRequestRef
     .post("/service-request/${service_request_reference}/pba-payments")
     .header("Authorization", "${accessToken}")
@@ -76,11 +113,17 @@ object Ways2Pay {
     .body(ElFileBody("WaystoPayPBAPayment.json"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
 
 
+<<<<<<< HEAD
   //Get card payment status by Internal Reference for previous payment.  This uses data stored in InternalRef.csv
   val W2PCardPaymentStatusGET = exec(http("Ways2Pay_070_W2PCardPaymentStatusGET")
+=======
+  //Get card payment status by Internal Reference
+  val W2PCardPaymentStatusGET = exec(http("Ways2Pay_080_W2PCardPaymentStatusGET")
+>>>>>>> 141193099d63aae4cf1e2526b530bdd97deb790b
     .get("/card-payments/${InternalRef}/status")//Internal Ref
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
@@ -89,4 +132,5 @@ object Ways2Pay {
     .header("return-url", "https://localhost")
     .check(status is 200)
   )
+    .pause(thinkTime)
 }
