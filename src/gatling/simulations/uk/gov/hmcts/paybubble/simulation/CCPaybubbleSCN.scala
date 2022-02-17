@@ -364,11 +364,15 @@ CCPaybubbleSCN extends Simulation {
 	//		setUp(getOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 
 	//Ways to Pay
-
 //	setUp(Ways2PayCC_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 	setUp(
 		Ways2PayCC_Scn.inject(rampUsers(95) during (50 minutes)).protocols(httpProtocol),
 		Ways2PayPBA_Scn.inject(rampUsers(95) during (50 minutes)).protocols(httpProtocol)
 	).maxDuration(60 minutes)
 
+	/*setUp(
+		Ways2PayCC_Scn.inject(rampUsers(1) during (1 minutes)).protocols(httpProtocol),
+		Ways2PayPBA_Scn.inject(rampUsers(1) during (1 minutes)).protocols(httpProtocol)
+	).maxDuration(60 minutes)
+*/
 }

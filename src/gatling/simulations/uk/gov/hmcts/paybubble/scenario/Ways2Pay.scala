@@ -8,9 +8,7 @@ import uk.gov.hmcts.paybubble.util.Environment
 
 object Ways2Pay {
 
-<<<<<<< HEAD
   //This POST's a new service Request for W2P
-=======
   val thinkTime = Environment.thinkTime
 
   val AddOrder = exec(http("Ways2Pay_010_AddOrder")
@@ -38,7 +36,6 @@ object Ways2Pay {
     .pause(thinkTime)
 
   //This POSTs a new service Request
->>>>>>> 141193099d63aae4cf1e2526b530bdd97deb790b
   val ServiceRequest = exec(http("Ways2Pay_030_ServiceRequestPOST")
     .post("/service-request")
     .header("Authorization", "${accessToken}")
@@ -101,7 +98,6 @@ object Ways2Pay {
 
   ////creates credit account payment via PBA  against the Service Request which was raised in the ServiceRequest request earlier
   val W2PPBAPaymentsPOST = exec(http("Ways2Pay_070_W2PPBAPaymentsPOST")
-
    // .post("/service-request/2022-1644853755337/pba-payments") //serviceRequestRef
     .post("/service-request/${service_request_reference}/pba-payments")
     .header("Authorization", "${accessToken}")
@@ -116,14 +112,8 @@ object Ways2Pay {
     .pause(thinkTime)
 
 
-
-<<<<<<< HEAD
   //Get card payment status by Internal Reference for previous payment.  This uses data stored in InternalRef.csv
-  val W2PCardPaymentStatusGET = exec(http("Ways2Pay_070_W2PCardPaymentStatusGET")
-=======
-  //Get card payment status by Internal Reference
   val W2PCardPaymentStatusGET = exec(http("Ways2Pay_080_W2PCardPaymentStatusGET")
->>>>>>> 141193099d63aae4cf1e2526b530bdd97deb790b
     .get("/card-payments/${InternalRef}/status")//Internal Ref
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
