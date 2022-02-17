@@ -27,7 +27,7 @@ object Environment {
  val IDAM_OAUTH_SECRET = "NVYEC2X7XFSRENTU" //to be obtained from vault
  val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ""
 
- val thinkTime = 10
+ val thinkTime = 15
 
  val minThinkTime = 5
  //10
