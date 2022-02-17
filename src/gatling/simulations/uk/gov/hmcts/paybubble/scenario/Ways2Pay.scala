@@ -4,8 +4,11 @@ import java.io.{BufferedWriter, FileWriter}
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import uk.gov.hmcts.paybubble.util.Environment
 
 object Ways2Pay {
+
+  val thinkTime = Environment.thinkTime
 
   val AddOrder = exec(http("Ways2Pay_010_AddOrder")
     .post("/order")
@@ -29,7 +32,7 @@ object Ways2Pay {
        finally fw.close()
        session
      }
-    .pause(10)
+    .pause(thinkTime)
 
   //This POSTs a new service Request
   val ServiceRequest = exec(http("Ways2Pay_030_ServiceRequestPOST")
@@ -42,6 +45,7 @@ object Ways2Pay {
     .check(jsonPath("$..service_request_reference").saveAs("service_request_reference"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
   //On the PayNow Page this does a Get payments for a PBA account.  Currently we only have PBAFUNC12345 setup
   val W2PPBAPaymentsGET = exec(http("Ways2Pay_040_W2PPBAPaymentsGET")
@@ -53,6 +57,7 @@ object Ways2Pay {
     .header("return-url", "https://localhost")
     .check(status is 200)
   )
+    .pause(thinkTime)
 
   //
   val getPaymentGroupReferenceByCase = exec(http("Ways2Pay_050_PaymentGroupReferenceByCaseGET")
@@ -62,6 +67,7 @@ object Ways2Pay {
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
     .check(status is 200))
+    .pause(thinkTime)
 
   val W2PCreditcardPayment = exec(http("Ways2Pay_060_W2PCreditCardPaymentPOST")
    // .post("/service-request/2022-1644834768896/card-payments") //serviceRequestRef
@@ -74,6 +80,7 @@ object Ways2Pay {
     .body(ElFileBody("WaystoPayCCPayment.json"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
 
 /*
@@ -85,7 +92,7 @@ object Ways2Pay {
 //    .check(status is 200)
  // )*/
 
-  val W2PPBAPaymentsPOST = exec(http("Ways2Pay_060_W2PPBAPaymentsPOST")
+  val W2PPBAPaymentsPOST = exec(http("Ways2Pay_070_W2PPBAPaymentsPOST")
    // .post("/service-request/2022-1644853755337/pba-payments") //serviceRequestRef
     .post("/service-request/${service_request_reference}/pba-payments")
     .header("Authorization", "${accessToken}")
@@ -97,11 +104,12 @@ object Ways2Pay {
     .body(ElFileBody("WaystoPayPBAPayment.json"))
     .check(status is 201)
   )
+    .pause(thinkTime)
 
 
 
   //Get card payment status by Internal Reference
-  val W2PCardPaymentStatusGET = exec(http("Ways2Pay_070_W2PCardPaymentStatusGET")
+  val W2PCardPaymentStatusGET = exec(http("Ways2Pay_080_W2PCardPaymentStatusGET")
     .get("/card-payments/${InternalRef}/status")//Internal Ref
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
@@ -110,4 +118,5 @@ object Ways2Pay {
     .header("return-url", "https://localhost")
     .check(status is 200)
   )
+    .pause(thinkTime)
 }

@@ -236,15 +236,24 @@ class CCPaybubbleSCN extends Simulation {
 	val Ways2PayPBA_Scn = scenario("Way2Pay Pay By Account Scenario ")
 		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
 		.feed(UUID)
-		.repeat(1) {//271
+		.repeat(1) { //271
 			exec(IDAMHelper.getIdamToken)
 				.exec(S2SHelper.S2SAuthToken)
 				.exec(Ways2Pay.ServiceRequest)
 				.exec(Ways2Pay.W2PPBAPaymentsGET)
 				.exec(Ways2Pay.getPaymentGroupReferenceByCase)
 				.exec(Ways2Pay.W2PPBAPaymentsPOST)
-
 		}
+
+
+	val W2P = scenario("Way2Pay Pay By Account and Credit Card Scenario ")
+		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).feed(internalFeeder).feed(UUID)
+		.repeat(1) { //271
+			exec(Ways2PayCC_Scn)
+				.exec(Ways2PayPBA_Scn)
+		}
+
+
 	/*setUp(datagendcn_Scn.inject(nothingFor(15),rampUsers(1199) during (1800))).protocols(bulkscanhttpProtocol)*/
 	/*setUp(telephony_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)*/
 	//setUp(bulkscan_Scn.inject(atOnceUsers(1))).protocols(httpProtocol)
@@ -355,6 +364,9 @@ class CCPaybubbleSCN extends Simulation {
 
 	//Ways to Pay
 //	setUp(Ways2PayCC_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
-	setUp(Ways2PayPBA_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+	setUp(
+		Ways2PayCC_Scn.inject(rampUsers(250) during (5 minutes)).protocols(httpProtocol),
+		Ways2PayPBA_Scn.inject(rampUsers(250) during (5 minutes)).protocols(httpProtocol)
+	).maxDuration(60 minutes)
 
 }
