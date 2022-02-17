@@ -9,7 +9,8 @@ import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.Random
 
-class CCPaybubbleSCN extends Simulation {
+class
+CCPaybubbleSCN extends Simulation {
 
 	val idamUrl = Environment.idamURL
 	val baseURL=Environment.baseURL
@@ -354,7 +355,7 @@ class CCPaybubbleSCN extends Simulation {
 	//		setUp(getOrder_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 
 	//Ways to Pay
-//	setUp(Ways2PayCC_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
-	setUp(Ways2PayPBA_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
+	setUp(Ways2PayCC_Scn.inject(rampUsers(13) during (5 minutes))).protocols(httpProtocol)
+	//setUp(Ways2PayPBA_Scn.inject(rampUsers(1) during (1 minutes))).protocols(httpProtocol)
 
 }
