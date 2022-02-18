@@ -50,7 +50,7 @@ object Ways2Pay {
 
   //On the PayNow Page this does a Get payments for a PBA account.  Currently we only have PBAFUNC12345 setup
   val W2PPBAPaymentsGET = exec(http("Ways2Pay_040_W2PPBAPaymentsGET")
-    .get("/pba-accounts/PBAFUNC12345/payments")
+    .get("/pba-accounts/${account}/payments")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")

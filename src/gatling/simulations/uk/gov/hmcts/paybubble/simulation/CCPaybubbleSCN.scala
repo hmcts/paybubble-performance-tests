@@ -29,6 +29,7 @@ CCPaybubbleSCN extends Simulation {
 	val CPOCaseIdFeeder =csv("CPO_case_ids.csv").circular
 	val orderReferencesFeeder =csv("order_references.csv").circular
   val refundsUsersFeeder = csv("RefundUsers.csv").circular
+	val accountsFeeder = csv("accountW2P.csv").circular
   val refundIDsFeeder = csv("RefundData.csv").queue
 	val internalFeeder = csv("InternalRef.csv").circular
 	val caseNumber = Iterator.continually(Map("case_number" -> (1000000000L * (Random.nextInt(9000000) + 1000000) + Random.nextInt(1000000000))))
@@ -223,7 +224,7 @@ CCPaybubbleSCN extends Simulation {
 
 
 	val Ways2PayCC_Scn = scenario("Way2Pay Credit Card Scenario ")
-		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).feed(internalFeeder)
+		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).feed(internalFeeder).feed(accountsFeeder)
 		.repeat(1) {//271
 			exec(IDAMHelper.getIdamToken)
 				.exec(S2SHelper.S2SAuthToken)
@@ -235,7 +236,7 @@ CCPaybubbleSCN extends Simulation {
 		}
 
 	val Ways2PayPBA_Scn = scenario("Way2Pay Pay By Account Scenario ")
-		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder)
+		.feed(feederViewCCDPayment).feed(Feeders.ViewPaymentsFeeder).feed(accountsFeeder)
 		.feed(UUID)
 		.repeat(1) { //271
 			exec(IDAMHelper.getIdamToken)
