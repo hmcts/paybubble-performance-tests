@@ -50,7 +50,8 @@ object Ways2Pay {
 
   //On the PayNow Page this does a Get payments for a PBA account.  Currently we only have PBAFUNC12345 setup
   val W2PPBAPaymentsGET = exec(http("Ways2Pay_040_W2PPBAPaymentsGET")
-    .get("/pba-accounts/${account}/payments")
+  //  .get("/pba-accounts/${account}/payments")
+    .get("/pba-accounts")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
@@ -79,7 +80,7 @@ object Ways2Pay {
     .header("ServiceAuthorization", "${s2sToken}")
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
-    .header("return-url", "https://localhost")
+   // .header("returnUrl", "https://localhost")
     .body(ElFileBody("WaystoPayCCPayment.json"))
     .check(status is 201)
   )
@@ -102,7 +103,7 @@ object Ways2Pay {
     .post("/service-request/${service_request_reference}/pba-payments")
     .header("Authorization", "${accessToken}")
     .header("ServiceAuthorization", "${s2sToken}")
-    .header("idempotency_key", "${UUID}")
+   // .header("idempotency_key", "${UUID}")
     .header("Content-Type", "application/json")
     .header("accept", "*/*")
     .header("return-url", "https://localhost")

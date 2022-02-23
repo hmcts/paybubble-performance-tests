@@ -23,8 +23,9 @@ object IDAMHelper {
 
   val getIdamToken =
     exec(http("010_GetAuthToken")
-         .post(idamURL  + "/o/token?client_id=" + OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid profile roles search-user&username=kishanki@gmail.com&password=LevelAt12")
-         .header("Content-Type", "application/x-www-form-urlencoded")
+        // .post(idamURL  + "/o/token?client_id=" + OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid profile roles search-user&username=kishanki@gmail.com&password=LevelAt12")
+          .post(idamURL  + "/o/token?client_id=" + OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid profile roles search-user&username=perftestways2pay@mailnesia.com&password=LevelAt12")
+          .header("Content-Type", "application/x-www-form-urlencoded")
          .header("Content-Length", "0")
          .check(status is 200)
          .check(jsonPath("$.access_token").saveAs("accessToken")))

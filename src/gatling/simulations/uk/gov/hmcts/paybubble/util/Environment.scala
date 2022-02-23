@@ -22,8 +22,8 @@ object Environment {
  val S2S_BASE_URI = "http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal/testing-support"
  val DM_STORE_API_BASE_URI = "http://dm-store-perftest.service.core-compute-perftest.internal"
  val refundsUrl = "http://ccpay-refunds-api-perftest.service.core-compute-perftest.internal"
- //val S2S_SERVICE_NAME = "api_gw"
- val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service //probate_frontend //payment_app
+ val S2S_SERVICE_NAME = "ccpay_bubble"
+// val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service //probate_frontend //payment_app
  val IDAM_OAUTH_SECRET = "NVYEC2X7XFSRENTU" //to be obtained from vault
  val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ""
 

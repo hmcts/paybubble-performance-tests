@@ -2,5 +2,6 @@
   "account_number": "PBAFUNC12345",
   "amount": 218.00,
   "currency": "GBP",
-  "customer_reference": "PBA"
+  "customer_reference": "PBA",
+  "idempotency_key": "${UUID}"
 }
