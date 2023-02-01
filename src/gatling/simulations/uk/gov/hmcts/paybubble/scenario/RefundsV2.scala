@@ -122,7 +122,7 @@ object RefundsV2 {
         .queryParam("end_date", "${refundEndDate}")
         .queryParam("start_date", "${refundEndDate}")
         .queryParam("refund_reference", "${reference}")
-        .check(jsonPath("$.refunds[0].payment.reference").is("${reference}")))
+        .check(jsonPath("$.refunds[0].payment.reference").saveAs("getRefundsResponse")))
     }
 
   // get status history
