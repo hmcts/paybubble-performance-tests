@@ -1,0 +1,22 @@
+{
+  "code": "RE005",
+  "reason": "Other",
+  "template_preview": {
+    "body": "",
+    "from": {
+      "from_email_address": "perftest@test.com",
+      "from_mail_address": {
+        "address_line": "10 Test Street",
+        "city": "Test Town",
+        "country": "Test Country",
+        "county": "Test County",
+        "postal_code": "FK79JL"
+      }
+    },
+    "html": "",
+    "id": "",
+    "subject": "",
+    "template_type": "",
+    "version": 0
+  }
+}

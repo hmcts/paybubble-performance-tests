@@ -1,0 +1,23 @@
+{
+  "amount": 0.15,
+  "contact_details": {
+    "address_line": "string",
+    "city": "string",
+    "country": "string",
+    "county": "string",
+    "email": "perftest@test.com",
+    "notification_type": "EMAIL",
+    "postal_code": "string",
+    "template_id": "string"
+  },
+  "refund_fees": [
+    {
+      "code": "",
+      "fee_id": 0,
+      "refund_amount": 0,
+      "version": "",
+      "volume": 0
+    }
+  ],
+  "refund_reason": "RR001"
+}
