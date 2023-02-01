@@ -38,6 +38,17 @@ object IDAMHelper {
       .check(status is 200)
       .check(jsonPath("$.access_token").saveAs("accessTokenRefund")))
 
+  val refundsGetAdminIdamToken =
+    exec(http("PaymentAPIToken_010_GetAuthToken")
+      .post(idamURL + "/o/token?client_id=" + OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid profile roles search-user&username=${adminEmail}&password=${adminPassword}")
+      .header("Content-Type", "application/x-www-form-urlencoded")
+      .header("Content-Length", "0")
+      .check(status is 200)
+      .check(jsonPath("$.access_token").saveAs("adminAccessTokenRefund")))
+
+
+
+
 
 
 }

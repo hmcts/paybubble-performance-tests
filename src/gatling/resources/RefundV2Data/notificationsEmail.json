@@ -1,0 +1,14 @@
+{
+  "email_reply_to_id":"craig.ritchie@hmcts.net",
+  "notification_type":"EMAIL",
+  "personalisation":{
+    "ccd_case_number":"${ccd_case_number}",
+    "refund_amount":0.10,
+    "refund_reason":"RR001",
+    "refund_reference":"${refundId}"
+  },
+  "recipient_email_address":"craig.ritchie@hmcts.net",
+  "reference":"${refundId}",
+  "service_name":"Civil",
+  "template_id":"8833960c-4ffa-42db-806c-451a68c56e98"
+}

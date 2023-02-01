@@ -5,6 +5,8 @@ import com.typesafe.config.ConfigFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
 
 object Environment {
 
@@ -22,6 +24,7 @@ object Environment {
  val S2S_BASE_URI = "http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal/testing-support"
  val DM_STORE_API_BASE_URI = "http://dm-store-perftest.service.core-compute-perftest.internal"
  val refundsUrl = "http://ccpay-refunds-api-perftest.service.core-compute-perftest.internal"
+ val notificationsUrl = "http://ccpay-notifications-service-perftest.service.core-compute-perftest.internal"
  val S2S_SERVICE_NAME = "ccpay_bubble"
 // val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service //probate_frontend //payment_app
  val IDAM_OAUTH_SECRET = "NVYEC2X7XFSRENTU" //to be obtained from vault
@@ -33,6 +36,8 @@ object Environment {
  //10
  val maxThinkTime = 6
  //30
+
+ val HttpProtocol = http
 
  val commonHeader = Map(
   "accept" -> "image/webp,image/apng,image/*,*/*;q=0.8",

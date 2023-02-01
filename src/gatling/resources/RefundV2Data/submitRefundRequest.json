@@ -1,0 +1,30 @@
+{
+  "ccd_case_number": "${ccd_case_number}",
+  "contact_details": {
+    "address_line": "10 Test Street",
+    "city": "Test Town",
+    "country": "Test Country",
+    "county": "Test County",
+    "email": "perftest@test.com",
+    "notification_type": "email",
+    "postal_code": "EH8 9RP",
+    "template_id": ""
+  },
+  "fee_ids": "${payment_link_id}",
+  "payment_amount": "${amount}",
+  "payment_channel": "${payment_channel}",
+  "payment_method": "${payment_method}",
+  "payment_reference": "${reference}",
+  "refund_amount": 1.00,
+  "refund_fees": [
+    {
+      "code": "",
+      "fee_id": 0,
+      "refund_amount": 0,
+      "version": "",
+      "volume": 0
+    }
+  ],
+  "refund_reason": "RR001",
+  "service_type": "${service_type}"
+}
