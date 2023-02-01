@@ -1,0 +1,10 @@
+{
+  "recipient_email_address": "perftest@test.com",
+  "recipient_postal_address": {
+    "address_line": "10 Test Street",
+    "city": "Test Towb",
+    "country": "Test Country",
+    "county": "Test County",
+    "postal_code": "EH8 9RP"
+  }
+}

@@ -3,7 +3,7 @@ package uk.gov.hmcts.paybubble.simulation
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.paybubble.scenario.{DCNGenerator, OnlineTelephonyScenario, PayBubbleLogin, PaymentTransactionAPI}
-import uk.gov.hmcts.paybubble.scenario.util._
+import uk.gov.hmcts.paybubble.util._
 import com.typesafe.config.{Config, ConfigFactory}
 
 class CCPaybubbleSCN extends Simulation {

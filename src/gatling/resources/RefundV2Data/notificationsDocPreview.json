@@ -1,0 +1,21 @@
+{
+  "notification_type": "${notificationType}",
+  "payment_channel": "${payment_channel}",
+  "payment_method": "${payment_method}",
+  "payment_reference": "${reference}",
+  "personalisation": {
+    "ccd_case_number": "${ccd_case_number}",
+    "refund_amount": 0.10,
+    "refund_reason": "RR001",
+    "refund_reference": "${refundId}"
+  },
+  "recipient_email_address": "perftest@test.com",
+  "recipient_postal_address": {
+    "address_line": "10 Test Street",
+    "city": "Test Town",
+    "country": "Test Country",
+    "county": "Test County",
+    "postal_code": "EH8 9RP"
+  },
+  "service_name": "Civil"
+}
