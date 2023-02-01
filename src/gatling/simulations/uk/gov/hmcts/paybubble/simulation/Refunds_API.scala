@@ -38,10 +38,12 @@ class Refunds_API extends Simulation {
   val testDurationMins = 60
   /*Hourly Volumes for Get Refund*/
   val GetRefundHourlyTarget: Double = 100
+  val GetNotificationHourlyTarget: Double = 100
 
 
   /*Rate Per Second Volume for Share Case Requests */
   val GetRefundRatePerSec = GetRefundHourlyTarget / 3600
+  val GetNotificationRatePerSec = GetNotificationHourlyTarget / 3600
 
   /* PIPELINE CONFIGURATION */
   val numberOfPipelineUsers = 1
@@ -50,7 +52,7 @@ class Refunds_API extends Simulation {
   /* SIMULATION FEEDER FILES */
   val refundUsers = csv("RefundUsers.csv").circular
   val paymentsForRefunds = csv("RefundV2Data/refundData.csv")
-  val refundAdminUsers = csv("RefundV2Data/refundAdminUsers.csv")
+  val refundAdminUsers = csv("RefundV2Data/refundAdminUsers.csv").circular
   val notificationData = csv("RefundV2Data/notificationData.csv")
   //val NOCAPIFeeder = csv("noticeOfChangeAPI.csv")
 
@@ -171,10 +173,10 @@ class Refunds_API extends Simulation {
 
 
 
-  /*Refund Simulations */
+  /*Refund and Notification Simulations */
   setUp(
     ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
-    ScnNotifications.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
+    ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
