@@ -1,14 +1,14 @@
 {
   "amount": 0.15,
   "contact_details": {
-    "address_line": "string",
-    "city": "string",
-    "country": "string",
-    "county": "string",
-    "email": "perftest@test.com",
+    "address_line": "10 Test Street",
+    "city": "Test Town",
+    "country": "Test Country",
+    "county": "Test Town",
+    "email": "craig.ritchie@hmcts.net",
     "notification_type": "EMAIL",
-    "postal_code": "string",
-    "template_id": "string"
+    "postal_code": "FK7 9JL",
+    "template_id": "8833960c-4ffa-42db-806c-451a68c56e98"
   },
   "refund_fees": [
     {
