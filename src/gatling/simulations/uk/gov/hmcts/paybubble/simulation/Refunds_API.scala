@@ -39,11 +39,12 @@ class Refunds_API extends Simulation {
   /*Hourly Volumes for Get Refund*/
   val GetRefundHourlyTarget: Double = 100
   val GetNotificationHourlyTarget: Double = 100
-
+  val ReprocessNotificationsHourlyTarget: Double = 2
 
   /*Rate Per Second Volume for Share Case Requests */
   val GetRefundRatePerSec = GetRefundHourlyTarget / 3600
   val GetNotificationRatePerSec = GetNotificationHourlyTarget / 3600
+  val ReprocessNotificationsRatePerSec = ReprocessNotificationsHourlyTarget / 3600
 
   /* PIPELINE CONFIGURATION */
   val numberOfPipelineUsers = 1
@@ -146,14 +147,13 @@ class Refunds_API extends Simulation {
         .exec(RefundsV2.getRefundActions)
         .exec(RefundsV2.getRefundReasons)
         .exec(RefundsV2.getRefundRejectionReasons)
-        .exec(RefundsV2.reprocessFailedNotifications)
         .exec(RefundsV2.resendNotifications)
         .exec(RefundsV2.cancelRefund)
         .exec(RefundsV2.deleteRefund)
 
     }
 
-
+  /* this scenario will test the notifications apis. */
 
   val ScnNotifications = scenario("Notifications")
     .exitBlockOnFail {
@@ -171,14 +171,24 @@ class Refunds_API extends Simulation {
         .exec(RefundsV2.deleteRefund)
     }
 
+  /* this scenario will test the reprocessing of any failed notifications.
+     the endpoint will get hit every 30 minutes and is effectively a batch job */
 
-
+  val ScnReprocessFailedNotifications = scenario("ReprocessFailedNotifications")
+    .exitBlockOnFail {
+      exec(_.set("env", s"${env}"))
+        .feed(refundUsers)
+        .exec(S2SHelper.RefundsS2SAuthToken)
+        .exec(IDAMHelper.refundsGetIdamToken)
+        .exec(RefundsV2.reprocessFailedNotifications)
+    }
 
 
   /*Refund and Notification Simulations */
   setUp(
     ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
     ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
+    ScnReprocessFailedNotifications.inject(simulationProfile(testType, ReprocessNotificationsRatePerSec, numberOfPipelineUsers)).pauses(pauseOption)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
