@@ -55,6 +55,7 @@ class Refunds_API extends Simulation {
   val paymentsForRefunds = csv("RefundV2Data/refundData.csv")
   val refundAdminUsers = csv("RefundV2Data/refundAdminUsers.csv").circular
   val notificationData = csv("RefundV2Data/notificationData.csv")
+  val notificationPostcodeData = csv("RefundV2Data/notificationPostcodes.csv").random
   //val NOCAPIFeeder = csv("noticeOfChangeAPI.csv")
 
   //If running in debug mode, disable pauses between steps
@@ -160,9 +161,11 @@ class Refunds_API extends Simulation {
       exec(_.set("env", s"${env}"))
         .feed(refundUsers)
         .feed(notificationData)
+        .feed(notificationPostcodeData)
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
         .exec(RefundsV2.submitRefund)
+        .exec(Notifications.getNotificationPostcode)
         .exec(Notifications.notificationsDocPreview)
         .exec(Notifications.notificationsEmail)
         .exec(Notifications.notificationsLetter)

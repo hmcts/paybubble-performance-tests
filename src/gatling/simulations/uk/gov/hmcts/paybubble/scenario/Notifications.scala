@@ -75,4 +75,16 @@ object Notifications {
     }
 
 
+  val getNotificationPostcode =
+
+    group("Notifications") {
+      exec(http("GET_Postcode")
+        .get(Environment.notificationsUrl + "/notifications/postcode-lookup/${postcode}")
+        .header("Authorization", "Bearer ${accessTokenRefund}")
+        .header("ServiceAuthorization", "${s2sTokenRefund}")
+        .header("Content-Type", "application/json")
+        .check(jsonPath("$.results[0].DPA.ADDRESS").saveAs("postcodeAddress")))
+    }
+
+
 }
