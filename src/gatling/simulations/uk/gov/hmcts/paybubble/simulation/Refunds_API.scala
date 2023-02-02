@@ -163,13 +163,15 @@ class Refunds_API extends Simulation {
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
         .exec(RefundsV2.submitRefund)
-        .exec(Notifications.getNotifications)
         .exec(Notifications.notificationsDocPreview)
         .exec(Notifications.notificationsEmail)
         .exec(Notifications.notificationsLetter)
+        .exec(Notifications.getNotifications)
         .exec(RefundsV2.cancelRefund)
         .exec(RefundsV2.deleteRefund)
     }
+
+
 
 
 
