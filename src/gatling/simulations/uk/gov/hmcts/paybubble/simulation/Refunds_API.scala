@@ -127,18 +127,22 @@ class Refunds_API extends Simulation {
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
         .exec(RefundsV2.submitRefund)
-        //login as approver
+        .pause(5)
+//        //login as approver
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetAdminIdamToken)
         .exec(RefundsV2.reviewerActionRefund)
-        //login as caseworker
+        .pause(5)
+//        //login as caseworker
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
         .exec(RefundsV2.resubmitRefund)
-        //login as approver
+        .pause(5)
+//        //login as approver
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetAdminIdamToken)
         .exec(RefundsV2.approveRefund)
+        .pause(5)
         //login as caseworker
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
@@ -151,8 +155,8 @@ class Refunds_API extends Simulation {
         .exec(RefundsV2.resendNotifications)
         .exec(RefundsV2.cancelRefund)
         .exec(RefundsV2.deleteRefund)
-
     }
+
 
   /* this scenario will test the notifications apis. */
 
@@ -165,7 +169,7 @@ class Refunds_API extends Simulation {
         .exec(S2SHelper.RefundsS2SAuthToken)
         .exec(IDAMHelper.refundsGetIdamToken)
         .exec(RefundsV2.submitRefund)
-        .exec(Notifications.getNotificationPostcode)
+        .exec(Notifications.notificationPostcode)
         .exec(Notifications.notificationsDocPreview)
         .exec(Notifications.notificationsEmail)
         .exec(Notifications.notificationsLetter)
