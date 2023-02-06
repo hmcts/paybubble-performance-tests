@@ -104,7 +104,9 @@ object RefundsV2 {
         .header("Authorization", "Bearer ${accessTokenRefund}")
         .header("ServiceAuthorization", "${s2sTokenRefund}")
         .header("Content-Type", "application/json")
-        .queryParam("status", "Sent for approval"))
+        .queryParam("status", "Sent for approval")
+        .queryParam("ccdCaseNumber", "${ccd_case_number}")
+        .check(jsonPath("$.refund_list[0].ccd_case_number").is("${ccd_case_number}")))
     }
 
   //get refunds
@@ -120,7 +122,7 @@ object RefundsV2 {
         .header("ServiceAuthorization", "${s2sTokenRefund}")
         .header("Content-Type", "application/json")
         .queryParam("end_date", "${refundEndDate}")
-        .queryParam("start_date", "${refundEndDate}")
+        .queryParam("start_date", "${refundStartDate}")
         .queryParam("refund_reference", "${reference}")
         .check(jsonPath("$.refunds[0].payment.reference").saveAs("getRefundsResponse")))
     }
@@ -134,7 +136,6 @@ object RefundsV2 {
         .header("Authorization", "Bearer ${accessTokenRefund}")
         .header("ServiceAuthorization", "${s2sTokenRefund}")
         .header("Content-Type", "application/json")
-        .queryParam("status", "Sent for approval")
         .check(jsonPath("$.status_history_dto_list[0].id").saveAs("statusHistoryItem")))
     }
 
