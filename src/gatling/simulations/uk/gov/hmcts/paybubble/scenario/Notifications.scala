@@ -75,7 +75,7 @@ object Notifications {
     }
 
 
-  val getNotificationPostcode =
+  val notificationPostcode =
 
     group("Notifications") {
       exec(http("GET_Postcode")

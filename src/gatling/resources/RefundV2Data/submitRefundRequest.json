@@ -7,7 +7,7 @@
     "county": "Test County",
     "email": "craig.ritchie@hmcts.net",
     "notification_type": "email",
-    "postal_code": "EH8 9RP",
+    "postal_code": "FK79JL",
     "template_id": ""
   },
   "fee_ids": "${payment_link_id}",
@@ -15,7 +15,7 @@
   "payment_channel": "${payment_channel}",
   "payment_method": "${payment_method}",
   "payment_reference": "${reference}",
-  "refund_amount": 1.00,
+  "refund_amount": 0.10,
   "refund_fees": [
     {
       "code": "",
