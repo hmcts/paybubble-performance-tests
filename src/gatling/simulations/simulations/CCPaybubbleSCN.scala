@@ -2,14 +2,13 @@ package simulations
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import com.typesafe.config.{Config, ConfigFactory}
 import scenarios._
 import utils._
-
 import scala.io.Source
-import io.gatling.core.controller.inject.open.OpenInjectionStep
+import io.gatling.core.controller.inject.open.{AtOnceOpenInjection, OpenInjectionStep}
 import io.gatling.commons.stats.assertion.Assertion
 import io.gatling.core.pause.PauseType
-
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -27,7 +26,6 @@ class CCPaybubbleSCN extends Simulation {
     case _ => "**INVALID**"
   }
   /* ******************************** */
-
   /* ADDITIONAL COMMAND LINE ARGUMENT OPTIONS */
   val debugMode = System.getProperty("debug", "off") //runs a single user e.g. ./gradle gatlingRun -Ddebug=on (default: off)
   val env = System.getProperty("env", environment) //manually override the environment aat|perftest e.g. ./gradle gatlingRun -Denv=aat
@@ -38,6 +36,9 @@ class CCPaybubbleSCN extends Simulation {
   val rampDownDurationMins = 5
   val testDurationMins = 60
 
+	val numberOfPipelineUsers = 5
+	val pipelinePausesMillis: Long = 3000 //3 seconds
+
   val viewPaymentTarget:Double = 10
   val onlinePaymentTarget:Double = 10
   val bulkscanTarget:Double = 10
@@ -45,16 +46,19 @@ class CCPaybubbleSCN extends Simulation {
   val telephonyTarget:Double = 10
   val onlineTarget:Double = 10
 
-  //If running in debug mode, disable pauses between steps
-  val pauseOption:PauseType = debugMode match{
-    case "off" => constantPauses
-    case _ => disabledPauses
-  }
-  /* ******************************** */
+  //Determine the pause pattern to use:
+	//Performance test = use the pauses defined in the scripts
+	//Pipeline = override pauses in the script with a fixed value (pipelinePauseMillis)
+	//Debug mode = disable all pauses
+	val pauseOption:PauseType = debugMode match{
+		case "off" if testType == "perftest" => constantPauses
+		case "off" if testType == "pipeline" => customPauses(pipelinePausesMillis)
+		case _ => disabledPauses
+	}
 
-  /* PIPELINE CONFIGURATION */
-  val numberOfPipelineUsers:Double = 10
-  /* ******************************** */
+  //Gatling specific configs, required for perf testing
+  val BaseURL = Environment.baseURL
+  val config: Config = ConfigFactory.load()
 
   val httpProtocol = http
     .baseUrl(Environment.baseURL)
@@ -107,7 +111,8 @@ class CCPaybubbleSCN extends Simulation {
 	val bulkscan_Scn = scenario("Offline Bulkscan Payments Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
-  		.feed(feederbulkscan).feed(Feeders.BulkscanFeeder)
+  		.feed(feederbulkscan)
+      // .feed(Feeders.BulkscanFeeder)
       .exec(IDAMHelper.getIdamTokenLatest)
       .exec(S2SHelper.S2SAuthToken)
       .exec(PaymentTransactionAPI.getPaymentGroupReference)
@@ -118,7 +123,8 @@ class CCPaybubbleSCN extends Simulation {
 	val onlinePayment_Scn = scenario("Online Payments Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
-  		.feed(feederonline).feed(Feeders.OnlinePaymentFeeder)
+  		.feed(feederonline)
+      // .feed(Feeders.OnlinePaymentFeeder)
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.onlinePayment)
@@ -127,7 +133,8 @@ class CCPaybubbleSCN extends Simulation {
 	val PBA_Scn = scenario("Pay By Account Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
-  		.feed(feederpba).feed(Feeders.PBAFeeder)
+  		.feed(feederpba)
+      // .feed(Feeders.PBAFeeder)
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.PBA)
@@ -137,7 +144,7 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederViewCCDPayment)
-      // .feed(Feeders.ViewPaymentsFeeder)
+      .exec(_.set("service", "ViewPayments"))
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
@@ -180,11 +187,11 @@ class CCPaybubbleSCN extends Simulation {
 
 setUp(
     CCDViewPayment_Scn.inject(simulationProfile(testType, viewPaymentTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    // onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    // bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    // PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    // telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    // onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption),
   ).protocols(httpProtocol)
   .assertions(assertions(testType))
 

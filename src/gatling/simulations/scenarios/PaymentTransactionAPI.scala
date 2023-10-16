@@ -6,10 +6,12 @@ import utils._
 
 object PaymentTransactionAPI {
 
+  val baseURL = Environment.baseURL
+
   val getPaymentGroupReference =
 
     exec(http("PaymentAPI#{service}_030_GetPaymentGrpRef")
-      .post("/payment-groups")
+      .post(Environment.paymentAPIURL + "/payment-groups")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -23,7 +25,7 @@ object PaymentTransactionAPI {
   val PBA = 
   
     exec(http("PaymentAPI#{service}_030_PayByAccounts")
-      .post("/credit-account-payments")
+      .post(Environment.paymentAPIURL + "/credit-account-payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -36,7 +38,7 @@ object PaymentTransactionAPI {
   val onlinePayment = 
   
     exec(http("PaymentAPI#{service}_030_OnlinePayments")
-      .post("/card-payments")
+      .post(Environment.paymentAPIURL + "/card-payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -51,7 +53,7 @@ object PaymentTransactionAPI {
   val telephony = 
   
     exec(http("PaymentAPI#{service}_040_TelePayments")
-      .post("/payment-groups/#{paymentgroupref}/card-payments")
+      .post(Environment.paymentAPIURL + "/payment-groups/#{paymentgroupref}/card-payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -66,7 +68,7 @@ object PaymentTransactionAPI {
   val bulkscan = 
   
     exec(http("PaymentAPI#{service}_040_BulkScanPayments")
-      .post("/payment-groups/#{paymentgroupref}/bulk-scan-payments")
+      .post(Environment.paymentAPIURL + "/payment-groups/#{paymentgroupref}/bulk-scan-payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -79,7 +81,7 @@ object PaymentTransactionAPI {
   val paymentAllocations = 
   
     exec(http("PaymentAPI#{service}_050_BulkScanPaymentAllocations")
-      .post("/payment-allocations")
+      .post(Environment.paymentAPIURL + "/payment-allocations")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -91,7 +93,7 @@ object PaymentTransactionAPI {
   val getPaymentReferenceByCase = 
   
     exec(http("PaymentAPI#{service}_030_PayRefByCase")
-      .get("/cases/#{caseid}/payments")
+      .get(Environment.paymentAPIURL + "/cases/#{caseid}/payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -102,7 +104,7 @@ object PaymentTransactionAPI {
   val getPaymentGroupReferenceByCase = 
   
     exec(http("PaymentAPI#{service}_040_CCDViewPayment")
-      .get("/cases/#{caseid}/paymentgroups")
+      .get(Environment.paymentAPIURL + "/cases/#{caseid}/paymentgroups")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
@@ -112,7 +114,7 @@ object PaymentTransactionAPI {
   val ccdViewPayment = 
   
     exec(http("PaymentAPI#{service}_040_CCDViewPayment")
-      .get("/payment-groups/fee-pay-apportion/#{paymentreference}")
+      .get(Environment.paymentAPIURL + "/payment-groups/fee-pay-apportion/#{paymentreference}")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")

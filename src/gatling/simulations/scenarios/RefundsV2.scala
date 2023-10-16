@@ -110,8 +110,8 @@ object RefundsV2 {
   val getRefunds =
 
     exec(_.setAll(
-      "refundStartDate" -> currentDateTimeMinus1Day("yyyy-MM-dd"),
-      "refundEndDate" -> currentDateTime("yyyy-MM-dd")
+      "refundStartDate" -> Common.currentDateMinus1Day(),
+      "refundEndDate" -> Common.currentDate()
     ))
 
     .group("Refunds") {  

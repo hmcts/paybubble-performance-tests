@@ -9,7 +9,7 @@ import io.gatling.http.Predef._
 
 object Environment {
 
- val environment: String = System.getProperty("env")
+//  val environment: String = System.getProperty("env")
  val idamURL = "https://idam-web-public.#{env}.platform.hmcts.net"
  val baseURL = "https://paybubble.#{env}.platform.hmcts.net"
  val bulkScanURL = "http://ccpay-bulkscanning-api-#{env}.service.core-compute-#{env}.internal"
@@ -26,8 +26,6 @@ object Environment {
  val notificationsUrl = "http://ccpay-notifications-service-#{env}.service.core-compute-#{env}.internal"
  val S2S_SERVICE_NAME = "ccpay_bubble"
 // val S2S_SERVICE_NAME = "probate_frontend" //am_role_assignment_service //probate_frontend //payment_app
- val IDAM_OAUTH_SECRET = "" //to be obtained from vault
- val FUNCTIONAL_TEST_CLIENT_S2S_TOKEN = ""
 
  val thinkTime = 15
 
@@ -36,19 +34,6 @@ object Environment {
  val maxThinkTime = 6
  //30
 
- val HttpProtocol = http
-
- val commonHeader = Map(
-  "accept" -> "image/webp,image/apng,image/*,*/*;q=0.8",
-  "accept-encoding" -> "gzip, deflate, br",
-  "accept-language" -> "en-US,en;q=0.9",
-  "sec-fetch-dest" -> "image",
-  "sec-fetch-mode" -> "no-cors",
-  "sec-fetch-site" -> "same-origin")
-
- val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
- val current_date = LocalDate.now().format(pattern)
+val HttpProtocol = http
 
 }
-
-
