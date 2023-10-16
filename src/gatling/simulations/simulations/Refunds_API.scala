@@ -1,13 +1,17 @@
 package simulation
 
 import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import scenarios._
+import utils._
+
+import scala.io.Source
 import io.gatling.core.controller.inject.open.OpenInjectionStep
-import io.gatling.core.scenario.Simulation
+import io.gatling.commons.stats.assertion.Assertion
 import io.gatling.core.pause.PauseType
-import util._
-import scenario._
+
 import scala.concurrent.duration._
-import scala.language.postfixOps
+import scala.util.Random
 
 class Refunds_API extends Simulation {
 
