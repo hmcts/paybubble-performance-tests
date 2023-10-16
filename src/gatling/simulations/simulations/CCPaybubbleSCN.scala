@@ -86,7 +86,7 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
       .feed(feedertelephone)
-      // .feed(Feeders.TelephoneFeeder)
+      .exec(_.set("service", "Telephony"))
       .repeat(1) {//40
         exec(IDAMHelper.getIdamTokenLatest)
         .exec(S2SHelper.S2SAuthToken)
@@ -101,7 +101,7 @@ class CCPaybubbleSCN extends Simulation {
       .feed(onlineTelephonyFeeder)
       .feed(usersFeeder)
       .feed(onlineTelephonyCaseFeeder)
-      // .feed(Feeders.OnlineTelephonyFeeder)
+      .exec(_.set("service", "Online_Telephony"))
       .exec(PayBubbleLogin.homePage)
       .exec(PayBubbleLogin.login)
       .exec(OnlineTelephonyScenario.onlineTelephonyScenario)
@@ -112,7 +112,7 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederbulkscan)
-      // .feed(Feeders.BulkscanFeeder)
+      .exec(_.set("service", "BulkScan"))
       .exec(IDAMHelper.getIdamTokenLatest)
       .exec(S2SHelper.S2SAuthToken)
       .exec(PaymentTransactionAPI.getPaymentGroupReference)
@@ -124,7 +124,7 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederonline)
-      // .feed(Feeders.OnlinePaymentFeeder)
+      .exec(_.set("service", "Online"))
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.onlinePayment)
@@ -134,7 +134,7 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederpba)
-      // .feed(Feeders.PBAFeeder)
+      .exec(_.set("service", "PBA"))
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.PBA)
@@ -148,6 +148,7 @@ class CCPaybubbleSCN extends Simulation {
 			.exec(IDAMHelper.getIdamTokenLatest)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
+      .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
 			.exec(PaymentTransactionAPI.ccdViewPayment)
     }
   
@@ -186,12 +187,12 @@ class CCPaybubbleSCN extends Simulation {
   }
 
 setUp(
-    CCDViewPayment_Scn.inject(simulationProfile(testType, viewPaymentTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    // onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    // bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    // PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    // telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption),
-    // onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    CCDViewPayment_Scn.inject(simulationProfile(testType, viewPaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), //Returns a 500 error for viewing case payments
+    onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), //Fails on creating payment, returns a 500 error
+    bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption), //****Working****
+    PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption), //****Working****
+    telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption), //Returns a 404 for Telepayments
+    onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption), //Needs working users for UI
   ).protocols(httpProtocol)
   .assertions(assertions(testType))
 

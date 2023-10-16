@@ -1,4 +1,4 @@
-package simulation
+package simulations
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
@@ -192,9 +192,9 @@ class Refunds_API extends Simulation {
 
   /*Refund and Notification Simulations */
   setUp(
-    ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
-    ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
-    ScnReprocessFailedNotifications.inject(simulationProfile(testType, ReprocessNotificationsRatePerSec, numberOfPipelineUsers)).pauses(pauseOption)
+    ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption), //Needs a working user, returns a 409 for first request
+    ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption), //Needs a working user, returns a 409 for first request
+    ScnReprocessFailedNotifications.inject(simulationProfile(testType, ReprocessNotificationsRatePerSec, numberOfPipelineUsers)).pauses(pauseOption) //****Working****
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 }
