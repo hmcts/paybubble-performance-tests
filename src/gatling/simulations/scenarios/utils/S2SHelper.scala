@@ -1,32 +1,32 @@
-package uk.gov.hmcts.paybubble.util
+package utils
 
-import com.warrenstrange.googleauth.GoogleAuthenticator
+import com.typesafe.config.{Config, ConfigFactory}
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import uk.gov.hmcts.paybubble.util.Environment._
+import utils._
 
 object  S2SHelper {
 
-  val thinktime = 5
+  val config: Config = ConfigFactory.load()
 
-  val getOTP =
-  exec(
-    session => {
-      val otp: String = String.valueOf(new GoogleAuthenticator().getTotpPassword(FUNCTIONAL_TEST_CLIENT_S2S_TOKEN))
-      session.set("OTP", otp)
+  // val getOTP =
+  // exec(
+  //   session => {
+  //     val otp: String = String.valueOf(new GoogleAuthenticator().getTotpPassword(FUNCTIONAL_TEST_CLIENT_S2S_TOKEN))
+  //     session.set("OTP", otp)
 
-    })
+  //   })
 
-  val otpp="${OTP}"
+  // val otpp="#{OTP}"
 
   val S2SAuthToken =
 
     exec(http("020_GetServiceToken")
-      .post(S2S_BASE_URI + "/lease")
+      .post(Environment.S2S_BASE_URL + "/lease")
       .header("Content-Type", "application/json")
       .body(StringBody(
-        s"""{
-       "microservice": "${S2S_SERVICE_NAME}"
+        """{
+       "microservice": "ccpay_bubble"
         }"""
       )).asJson
       .check(bodyString.saveAs("s2sToken"))
@@ -40,7 +40,7 @@ object  S2SHelper {
   val RefundsS2SAuthToken =
 
     exec(http("PaymentAPIToken_020_GetServiceToken")
-      .post(S2S_BASE_URI + "/lease")
+      .post(Environment.S2S_BASE_URL + "/lease")
       .header("Content-Type", "application/json")
       .body(StringBody(
         """{
@@ -48,13 +48,6 @@ object  S2SHelper {
         }"""
       )).asJson
       .check(bodyString.saveAs("s2sTokenRefund"))
-      // .check(bodyString.saveAs("responseBody"))
       )
-
-    .pause(5)
-
-
-
-
 
 }

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.paybubble.util
+package utils
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat
 import java.util.UUID.randomUUID
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-
 
 object Common {
 
@@ -123,9 +122,4 @@ object Common {
 		}
 		roundedNumber
 	}
-
-
-
-
-
 }

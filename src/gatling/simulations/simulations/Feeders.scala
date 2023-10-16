@@ -1,4 +1,4 @@
-package uk.gov.hmcts.paybubble.simulation
+package simulation
 
 object Feeders {
 
@@ -64,14 +64,4 @@ object Feeders {
     })
 
   ));
-
-
-
-
-
-
-
 }
-
-
-
