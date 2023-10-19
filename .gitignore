@@ -10,3 +10,4 @@ build/**
 *.zip
 src/gatling/resources/application.conf
 bin/*
+.vscode/*

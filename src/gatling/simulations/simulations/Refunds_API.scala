@@ -1,17 +1,20 @@
-package uk.gov.hmcts.paybubble.simulation
+package simulations
 
 import io.gatling.core.Predef._
-import io.gatling.core.controller.inject.open.OpenInjectionStep
-import io.gatling.core.scenario.Simulation
-import io.gatling.core.pause.PauseType
-import uk.gov.hmcts.paybubble.util.Environment
-import uk.gov.hmcts.paybubble.util._
-import uk.gov.hmcts.paybubble.scenario._
-import scala.concurrent.duration._
-import scala.language.postfixOps
+import io.gatling.http.Predef._
+import scenarios._
+import utils._
 
+import scala.io.Source
+import io.gatling.core.controller.inject.open.OpenInjectionStep
+import io.gatling.commons.stats.assertion.Assertion
+import io.gatling.core.pause.PauseType
+
+import scala.concurrent.duration._
+import scala.util.Random
 
 class Refunds_API extends Simulation {
+
   val dmBaseURL = Environment.refundsUrl
 
   /* TEST TYPE DEFINITION */
@@ -36,6 +39,7 @@ class Refunds_API extends Simulation {
   val rampUpDurationMins = 5
   val rampDownDurationMins = 5
   val testDurationMins = 60
+
   /*Hourly Volumes for Get Refund*/
   val GetRefundHourlyTarget: Double = 100
   val GetNotificationHourlyTarget: Double = 100
@@ -48,7 +52,6 @@ class Refunds_API extends Simulation {
 
   /* PIPELINE CONFIGURATION */
   val numberOfPipelineUsers = 1
-
 
   /* SIMULATION FEEDER FILES */
   val refundUsers = csv("RefundUsers.csv").circular
@@ -82,7 +85,6 @@ class Refunds_API extends Simulation {
     println(s"Debug Mode: ${debugMode}")
   }
 
-
   //defines the Gatling simulation model, based on the inputs
   def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
     simulationType match {
@@ -115,7 +117,6 @@ class Refunds_API extends Simulation {
         Seq()
     }
   }
-
 
   val ScnRefunds = scenario("Refunds")
     .exitBlockOnFail {
@@ -157,7 +158,6 @@ class Refunds_API extends Simulation {
         .exec(RefundsV2.deleteRefund)
     }
 
-
   /* this scenario will test the notifications apis. */
 
   val ScnNotifications = scenario("Notifications")
@@ -190,13 +190,11 @@ class Refunds_API extends Simulation {
         .exec(RefundsV2.reprocessFailedNotifications)
     }
 
-
   /*Refund and Notification Simulations */
   setUp(
-    ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
-    ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption),
-    ScnReprocessFailedNotifications.inject(simulationProfile(testType, ReprocessNotificationsRatePerSec, numberOfPipelineUsers)).pauses(pauseOption)
+    ScnRefunds.inject(simulationProfile(testType, GetRefundRatePerSec, numberOfPipelineUsers)).pauses(pauseOption), //Needs a working user, returns a 409 for first request
+    ScnNotifications.inject(simulationProfile(testType, GetNotificationRatePerSec, numberOfPipelineUsers)).pauses(pauseOption), //Needs a working user, returns a 409 for first request
+    ScnReprocessFailedNotifications.inject(simulationProfile(testType, ReprocessNotificationsRatePerSec, numberOfPipelineUsers)).pauses(pauseOption) //****Working****
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
-
 }

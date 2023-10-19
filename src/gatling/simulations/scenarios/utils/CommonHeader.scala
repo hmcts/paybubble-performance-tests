@@ -1,9 +1,8 @@
-package uk.gov.hmcts.paybubble.util
+package utils
 
 object CommonHeader {
  val baseURL = Environment.baseURL
  val IdamUrl = Environment.idamURL
-
 
  // below headers are for home page and login and logout headers
 
@@ -84,7 +83,7 @@ object CommonHeader {
   "accept" -> "application/json, text/plain, */*",
   "accept-encoding" -> "gzip, deflate, br",
   "accept-language" -> "en-GB,en-US;q=0.9,en;q=0.8",
-  "csrf-token" -> "${csrf}",
+  "csrf-token" -> "#{csrf}",
   "sec-ch-ua" -> """Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87""",
   "sec-ch-ua-mobile" -> "?0",
   "sec-fetch-dest" -> "empty",
@@ -106,7 +105,7 @@ object CommonHeader {
   "accept" -> "application/json, text/plain, */*",
   "accept-encoding" -> "gzip, deflate, br",
   "accept-language" -> "en-US,en;q=0.9",
-  "csrf-token" -> "${csrf}",
+  "csrf-token" -> "#{csrf}",
   "sec-fetch-dest" -> "empty",
   "sec-fetch-mode" -> "cors",
   "sec-fetch-site" -> "same-origin",

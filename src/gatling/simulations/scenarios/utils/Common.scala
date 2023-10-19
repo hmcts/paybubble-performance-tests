@@ -1,15 +1,18 @@
-package uk.gov.hmcts.paybubble.util
+package utils
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.util.Random
-import java.time._
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.{ZonedDateTime, ZoneId}
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import java.util.UUID.randomUUID
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-
+import io.gatling.core.check.CheckBuilder
+import io.gatling.core.check.jsonpath.JsonPathCheckType
+import com.fasterxml.jackson.databind.JsonNode
 
 object Common {
 
@@ -20,7 +23,6 @@ object Common {
 	val patternYear = DateTimeFormatter.ofPattern("yyyy")
 	val patternDate = DateTimeFormatter.ofPattern("yyyyMMdd")
 
-
 	def randomString(length: Int) = {
 		rnd.alphanumeric.filter(_.isLetter).take(length).mkString
 	}
@@ -28,7 +30,6 @@ object Common {
 	def getDate(): String = {
 		now.format(patternDate)
 	}
-
 
 	def getDay(): String = {
 		(1 + rnd.nextInt(28)).toString.format(patternDay).reverse.padTo(2, '0').reverse //pads single-digit dates with a leading zero
@@ -48,36 +49,28 @@ object Common {
 	}
 
 	// returns the current date or time in format specified in the input pattern e.g. 'yyyy-MM-dd' or 'HH:mm:ss'
-	def currentDateTime(pattern:String): String = {
+	/*def currentDateTime(pattern:String): String = {
 		val currentDateTimeFormatted = LocalDateTime.now.format(DateTimeFormatter.ofPattern(pattern))
 		currentDateTimeFormatted
-	}
+	}*/
 
 	// returns the date 1 year from now
-	def currentDateTimePlus1Year(pattern: String): String = {
-		val dateFormatLocal = new SimpleDateFormat(pattern)
-		val currentDateTimeFormatted = LocalDateTime.now.format(DateTimeFormatter.ofPattern(pattern))
-		val origDate = dateFormatLocal.parse(currentDateTimeFormatted)
-		val c = Calendar.getInstance()
-		c.setTime(origDate)
-		c.add(Calendar.YEAR, 1)
-		val newDate = c.getTime()
-		val newDateFormat = dateFormatLocal.format(newDate)
-		newDateFormat
+	def currentDatePlus1Year(pattern: String): String = {
+		now.plusYears(1).format(patternDate)
 	}
 
 	// returns the date minus 1 day
-	def currentDateTimeMinus1Day(pattern: String): String = {
-		val dateFormatLocal = new SimpleDateFormat(pattern)
-		val currentDateTimeFormatted = LocalDateTime.now.format(DateTimeFormatter.ofPattern(pattern))
-		val origDate = dateFormatLocal.parse(currentDateTimeFormatted)
-		val c = Calendar.getInstance()
-		c.setTime(origDate)
-		c.add(Calendar.DAY_OF_WEEK, -1)
-		val newDate = c.getTime()
-		val newDateFormat = dateFormatLocal.format(newDate)
-		newDateFormat
+  def currentDateMinus1Day(): String = {
+		now.minusDays(1).format(patternDate)
 	}
+
+  def currentDate(): String = {
+    now.format(patternDate)
+  }
+
+
+
+
 
 //	//returns an integer value between a min and max value
 //	def getRandomNumberIntBetweenValues(minNumber: Int, maxNumber: Int): Int = {
@@ -123,9 +116,4 @@ object Common {
 		}
 		roundedNumber
 	}
-
-
-
-
-
 }
