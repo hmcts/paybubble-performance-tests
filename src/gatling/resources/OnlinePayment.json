@@ -1,0 +1,16 @@
+{
+  "amount": 593,
+  "description": "description",
+  "ccd_case_number": "#{caseid}",
+  "case_reference": "#{caseid}",
+  "service": "DIVORCE",
+  "currency": "GBP",
+  "fees": [
+      {
+          "code": "FEE0002",
+          "version": "6",
+          "calculated_amount": 593
+      }
+  ],
+  "site_id": "ABA5"
+}

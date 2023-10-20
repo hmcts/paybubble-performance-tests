@@ -45,24 +45,23 @@ object PaymentTransactionAPI {
       .header("accept", "*/*")
       .header("return-url", "http://div-cos-#{env}.service.core-compute-#{env}.internal/payment-update")
       .header("service-callback-url", "http://div-cos-#{env}.service.core-compute-#{env}.internal/payment-update")
-      .body(StringBody(
-        "{\n  \"amount\": #{amount},\n  \"case_reference\": \"string\",\n  \"ccd_case_number\": \"#{caseid}\",\n  \"currency\": \"GBP\",\n  \"description\": \"string\",\n  \"fees\": [\n    {\n      \"calculated_amount\": #{amount},\n      \"case_reference\": \"string\",\n      \"ccd_case_number\": \"#{caseid}\",\n      \"code\": \"FEE3130\",\n      \"description\": \"string\",\n      \"fee_amount\": #{amount},\n      \"id\": 0,\n      \"jurisdiction1\": \"string\",\n      \"jurisdiction2\": \"string\",\n      \"memo_line\": \"string\",\n      \"natural_account_code\": \"string\",\n      \"net_amount\": #{amount},\n      \"reference\": \"string\",\n      \"version\": \"1\",\n      \"volume\": 1\n    }\n  ],\n  \"service\": \"CMC\",\n  \"site_id\": \"AA08\"\n}"
-      )).asJson
+      .body(ElFileBody("OnlinePayment.json"))
       .check(status is 201))
 
   val telephony = 
   
     exec(http("PaymentAPI#{service}_040_TelePayments")
-      .post(Environment.paymentAPIURL + "/payment-groups/#{paymentgroupref}/card-payments")
+      .post(Environment.paymentAPIURL + "/payment-groups/#{paymentgroupref}/telephony-card-payments")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
       .header("accept", "*/*")
       .header("return-url", "http://div-cos-#{env}.service.core-compute-#{env}.internal/payment-update")
       .header("service-callback-url", "http://div-cos-#{env}.service.core-compute-#{env}.internal/payment-update")
-      .body(StringBody(
-        "{\n  \"currency\": \"GBP\",\n  \"description\": \"PayBubble payment\",\n  \"channel\": \"telephony\",\n  \"provider\": \"pci pal\",\n  \"ccd_case_number\": \"#{caseid}\",\n  \"amount\": \"#{amount}\",\n  \"service\": \"DIVORCE\",\n  \"site_id\": \"AA07\"\n}"
-      )).asJson
+      // .body(StringBody(
+      //   "{\n  \"currency\": \"GBP\",\n  \"description\": \"PayBubble payment\",\n  \"channel\": \"telephony\",\n  \"provider\": \"pci pal\",\n  \"ccd_case_number\": \"#{caseid}\",\n  \"amount\": \"#{amount}\",\n  \"service\": \"DIVORCE\",\n  \"site_id\": \"AA07\"\n}"
+      // )).asJson
+      .body(ElFileBody("TelephonyPaymentGroups.json"))
       .check(status is 201))
 
   val bulkscan = 
@@ -103,17 +102,17 @@ object PaymentTransactionAPI {
 
   val getPaymentGroupReferenceByCase = 
   
-    exec(http("PaymentAPI#{service}_040_CCDViewPayment")
+    exec(http("PaymentAPI#{service}_040_PayRefByGroup")
       .get(Environment.paymentAPIURL + "/cases/#{caseid}/paymentgroups")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")
       .header("Content-Type", "application/json")
       .header("accept", "*/*")
-      .check(status is 201))
+      .check(status in (200,201)))
 
   val ccdViewPayment = 
   
-    exec(http("PaymentAPI#{service}_040_CCDViewPayment")
+    exec(http("PaymentAPI#{service}_050_PayRefByApportion")
       .get(Environment.paymentAPIURL + "/payment-groups/fee-pay-apportion/#{paymentreference}")
       .header("Authorization", " #{accessToken}")
       .header("ServiceAuthorization", "#{s2sToken}")

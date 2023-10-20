@@ -1,0 +1,7 @@
+{
+  "amount": 100,
+  "ccd_case_number": "#{caseid}",
+  "currency": "GBP",
+  "return_url": "http://div-cos-#{env}.service.core-compute-#{env}.internal/payment-update",
+  "case_type": "DIVORCE"
+}

@@ -35,7 +35,7 @@ gatling {
   gatlingVersion '3.9.5'
   scalaVersion '2.13.10'
   simulations = {
-    include "simulations/Refunds_API.scala"
+    include "simulations/CCPaybubbleSCN.scala"
             //simulations/CCPaybubbleSCN.scala
             //simulations/Refunds_API.scala
   }

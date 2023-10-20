@@ -21,6 +21,8 @@ object IDAMHelper {
 
   val config: Config = ConfigFactory.load()
   val IDAM_OAUTH_SECRET = config.getString("auth.clientSecret")
+  val CCD_Secret = config.getString("auth.ccdClientSecret")
+  val ccdScope = "openid profile authorities acr roles openid profile roles"
 
   val getIdamToken =
     exec(http("010_GetAuthToken")
@@ -51,13 +53,27 @@ object IDAMHelper {
 
   val getIdamTokenLatest =
     exec(http("PaymentAPI#{service}_010_015_GetAuthToken")
-      .post(Environment.IDAM_API_BASE_URI + "/o/token?client_id=" + Environment.OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid&username=kishanki@gmail.com&password=LevelAt12")
+      .post(Environment.IDAM_API_BASE_URI + "/o/token?client_id=" + Environment.OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid&username=#{username}&password=#{password}")
       .header("Content-Type", "application/x-www-form-urlencoded")
       .header("Content-Length", "0")
       .check(status is 200)
       .check(jsonPath("$.access_token").saveAs("accessToken")))
 
+  val getIdamTokenPayments =
+    exec(http("PaymentAPI#{service}_010_015_GetAuthToken")
+      .post(Environment.IDAM_API_BASE_URI + "/o/token?client_id=" + Environment.OAUTH_CLIENT + "&client_secret=" + IDAM_OAUTH_SECRET + "&grant_type=password&scope=openid profile roles search-user&username=#{username}&password=#{password}")
+      .header("Content-Type", "application/x-www-form-urlencoded")
+      .header("Content-Length", "0")
+      .check(status is 200)
+      .check(jsonPath("$.access_token").saveAs("accessToken")))
 
+  val getIdamTokenCCD = 
+    exec(http("GetIdamToken")
+      .post(Environment.IDAM_API_BASE_URI + "/o/token?client_id=ccd_gateway&client_secret=" + CCD_Secret + "&grant_type=password&scope=" + ccdScope + "&username=#{username}&password=#{password}")
+      .header("Content-Type", "application/x-www-form-urlencoded")
+      .header("Content-Length", "0")
+      .check(status.is(200))
+      .check(jsonPath("$.access_token").saveAs("access_token")))
 
 
 

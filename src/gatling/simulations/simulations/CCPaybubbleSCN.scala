@@ -45,6 +45,7 @@ class CCPaybubbleSCN extends Simulation {
   val pbaTarget:Double = 10
   val telephonyTarget:Double = 10
   val onlineTarget:Double = 10
+  val ccdCreateTarget:Double = 10
 
   //Determine the pause pattern to use:
 	//Performance test = use the pauses defined in the scripts
@@ -74,6 +75,7 @@ class CCPaybubbleSCN extends Simulation {
 
 	val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederonline =jsonFile("dataonlinepayment.json").circular
+  val caseFeeder = csv("casePayments.csv").circular
 	val feederbulkscan =jsonFile("databulkscanpayments.json").circular
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
@@ -81,14 +83,16 @@ class CCPaybubbleSCN extends Simulation {
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val onlineTelephonyCaseFeeder = csv("onlinetelephonycaseids.csv").circular
 	val usersFeeder = csv("users.csv").circular
+  val divorceUserData = csv("DivorceUserData.csv").circular
 
 	val telephonyScn = scenario("Offline Telephony Payments Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
       .feed(feedertelephone)
+      .feed(usersFeeder)
       .exec(_.set("service", "Telephony"))
       .repeat(1) {//40
-        exec(IDAMHelper.getIdamTokenLatest)
+        exec(IDAMHelper.getIdamTokenPayments)
         .exec(S2SHelper.S2SAuthToken)
         .exec(PaymentTransactionAPI.getPaymentGroupReference)
         .exec(PaymentTransactionAPI.telephony)
@@ -112,8 +116,9 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederbulkscan)
+      .feed(usersFeeder)
       .exec(_.set("service", "BulkScan"))
-      .exec(IDAMHelper.getIdamTokenLatest)
+      .exec(IDAMHelper.getIdamTokenPayments)
       .exec(S2SHelper.S2SAuthToken)
       .exec(PaymentTransactionAPI.getPaymentGroupReference)
       .exec(PaymentTransactionAPI.bulkscan)
@@ -123,19 +128,32 @@ class CCPaybubbleSCN extends Simulation {
 	val onlinePayment_Scn = scenario("Online Payments Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
-  		.feed(feederonline)
+      .feed(divorceUserData)
+      .exec(IDAMHelper.getIdamTokenCCD)
+      .exec(S2SHelper.CCDS2SToken)
+      .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
+  		// .feed(caseFeeder) //feederonline
+      .feed(usersFeeder)
       .exec(_.set("service", "Online"))
-			.exec(IDAMHelper.getIdamTokenLatest)
-			.exec(S2SHelper.S2SAuthToken)
+			.exec(IDAMHelper.getIdamTokenPayments)
+			.exec(S2SHelper.S2SPaymentsAuthToken)
 			.exec(PaymentTransactionAPI.onlinePayment)
+      .exec(PaymentTransactionAPI.getPaymentReferenceByCase)
+      .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
+			.exec(PaymentTransactionAPI.ccdViewPayment)
     }
 
 	val PBA_Scn = scenario("Pay By Account Scenario")
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
-  		.feed(feederpba)
+      .feed(divorceUserData)
+      .exec(IDAMHelper.getIdamTokenCCD)
+      .exec(S2SHelper.CCDS2SToken)
+      .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
+  		// .feed(feederpba)
+      .feed(usersFeeder)
       .exec(_.set("service", "PBA"))
-			.exec(IDAMHelper.getIdamTokenLatest)
+			.exec(IDAMHelper.getIdamTokenPayments)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.PBA)
     }
@@ -144,13 +162,24 @@ class CCPaybubbleSCN extends Simulation {
     .exitBlockOnFail {
       exec(_.set("env", s"${env}"))
   		.feed(feederViewCCDPayment)
+      .feed(usersFeeder)
       .exec(_.set("service", "ViewPayments"))
-			.exec(IDAMHelper.getIdamTokenLatest)
+			.exec(IDAMHelper.getIdamTokenPayments)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
       .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
 			.exec(PaymentTransactionAPI.ccdViewPayment)
     }
+
+  val CCDCreateCase_Scn = scenario("Create Divorce case")
+    .exitBlockOnFail {
+      exec(_.set("env", s"${env}"))
+      .feed(divorceUserData)
+      .exec(IDAMHelper.getIdamTokenCCD)
+      .exec(S2SHelper.CCDS2SToken)
+      .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
+    }
+
   
   //defines the Gatling simulation model, based on the inputs
   def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
@@ -187,12 +216,14 @@ class CCPaybubbleSCN extends Simulation {
   }
 
 setUp(
-    CCDViewPayment_Scn.inject(simulationProfile(testType, viewPaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), //Returns a 500 error for viewing case payments
-    onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), //Fails on creating payment, returns a 500 error
-    bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption), //****Working****
-    PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption), //****Working****
-    telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption), //Returns a 404 for Telepayments
-    onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption), //Needs working users for UI
+    CCDViewPayment_Scn.inject(simulationProfile(testType, viewPaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), 
+    onlinePayment_Scn.inject(simulationProfile(testType, onlinePaymentTarget, numberOfPipelineUsers)).pauses(pauseOption), 
+    bulkscan_Scn.inject(simulationProfile(testType, bulkscanTarget, numberOfPipelineUsers)).pauses(pauseOption), 
+    PBA_Scn.inject(simulationProfile(testType, pbaTarget, numberOfPipelineUsers)).pauses(pauseOption),
+    telephonyScn.inject(simulationProfile(testType, telephonyTarget, numberOfPipelineUsers)).pauses(pauseOption), 
+
+    // onlineTelephony_Scn.inject(simulationProfile(testType, onlineTarget, numberOfPipelineUsers)).pauses(pauseOption), //UI - not required
+    // CCDCreateCase_Scn.inject(simulationProfile(testType, ccdCreateTarget, numberOfPipelineUsers)).pauses(pauseOption) //Used for creating Divorce cases, data gen
   ).protocols(httpProtocol)
   .assertions(assertions(testType))
 

@@ -37,6 +37,18 @@ object  S2SHelper {
         session
       })*/
 
+  val S2SPaymentsAuthToken =
+
+    exec(http("020_GetServiceToken")
+      .post(Environment.S2S_BASE_URL + "/lease")
+      .header("Content-Type", "application/json")
+      .body(StringBody(
+        """{
+       "microservice": "divorce_frontend"
+        }"""
+      )).asJson
+      .check(bodyString.saveAs("s2sToken")))
+
   val RefundsS2SAuthToken =
 
     exec(http("PaymentAPIToken_020_GetServiceToken")
@@ -49,5 +61,15 @@ object  S2SHelper {
       )).asJson
       .check(bodyString.saveAs("s2sTokenRefund"))
       )
+
+  val CCDS2SToken = 
+
+    exec(http("GetS2SToken")
+      .post(Environment.S2S_BASE_URL + "/lease")
+      .header("Content-Type", "application/json")
+      .body(StringBody("""{"microservice":"ccd_data"}"""))
+      .check(bodyString.saveAs("ccdS2SToken")))
+      .exitHereIfFailed
+
 
 }
