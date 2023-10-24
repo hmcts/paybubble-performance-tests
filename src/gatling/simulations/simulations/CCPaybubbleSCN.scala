@@ -182,7 +182,7 @@ class CCPaybubbleSCN extends Simulation {
     }
 
   //defines the Gatling simulation model, based on the inputs
-  def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
+  def simulationProfile(simulationType: String, userPerHourRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
     val userPerSecRate = userPerHourRate / 3600
     simulationType match {
       case "perftest" =>
