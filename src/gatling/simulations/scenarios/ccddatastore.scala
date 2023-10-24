@@ -33,7 +33,7 @@ object ccddatastore {
         session =>
           val fw = new BufferedWriter(new FileWriter("CCDCaseIDs.csv", true))
           try {
-            fw.write(session("caseId").as[String] + "\r\n")
+            fw.write(session("caseid").as[String] + "\r\n")
           }
           finally fw.close()
           session

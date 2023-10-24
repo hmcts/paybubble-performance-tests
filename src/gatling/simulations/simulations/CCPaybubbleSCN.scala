@@ -39,7 +39,7 @@ class CCPaybubbleSCN extends Simulation {
 	val numberOfPipelineUsers = 5
 	val pipelinePausesMillis:Long = 3000 //3 seconds
 
-  val viewPaymentTarget:Double = 14000
+  val viewPaymentTarget:Double = 2600
   val onlinePaymentTarget:Double = 200
   val bulkscanTarget:Double = 1500
   val pbaTarget:Double = 160
@@ -77,10 +77,12 @@ class CCPaybubbleSCN extends Simulation {
 	val feeder =jsonFile("datagenforbulkscan.json").circular
 	val feederonline =jsonFile("dataonlinepayment.json").circular
   val caseFeeder = csv("casePayments.csv").circular
-	val feederbulkscan =jsonFile("databulkscanpayments.json").circular
+	// val feederbulkscan =jsonFile("databulkscanpayments.json").circular
+	val feederbulkscan =csv("bulkscanpayment.csv").circular
 	val feedertelephone =jsonFile("datatelephonepayments.json").circular
 	val feederpba =jsonFile("dataPBA.json").circular
-	val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
+	// val feederViewCCDPayment =jsonFile("dataccdviewpayment.json").circular
+	val feederViewCCDPayment =csv("dataccdviewpayment.csv").random
 	val onlineTelephonyFeeder = jsonFile("onlinetelephony.json").circular
 	val onlineTelephonyCaseFeeder = csv("onlinetelephonycaseids.csv").circular
 	val usersFeeder = csv("users.csv").circular
@@ -133,12 +135,12 @@ class CCPaybubbleSCN extends Simulation {
       .exec(IDAMHelper.getIdamTokenCCD)
       .exec(S2SHelper.CCDS2SToken)
       .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
-  		// .feed(caseFeeder) //feederonline
+      // .feed(caseFeeder) //feederonline
       .feed(usersFeeder)
       .exec(_.set("service", "Online"))
-			.exec(IDAMHelper.getIdamTokenPayments)
-			.exec(S2SHelper.S2SPaymentsAuthToken)
-			.exec(PaymentTransactionAPI.onlinePayment)
+      .exec(IDAMHelper.getIdamTokenPayments)
+      .exec(S2SHelper.S2SPaymentsAuthToken)
+      .exec(PaymentTransactionAPI.onlinePayment)
       .exec(PaymentTransactionAPI.getPaymentReferenceByCase)
       .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
 			.exec(PaymentTransactionAPI.ccdViewPayment)
@@ -168,7 +170,7 @@ class CCPaybubbleSCN extends Simulation {
 			.exec(IDAMHelper.getIdamTokenPayments)
 			.exec(S2SHelper.S2SAuthToken)
 			.exec(PaymentTransactionAPI.getPaymentReferenceByCase)
-      .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase)
+      .exec(PaymentTransactionAPI.getPaymentGroupReferenceByCase) 
 			.exec(PaymentTransactionAPI.ccdViewPayment)
     }
 
@@ -178,7 +180,9 @@ class CCPaybubbleSCN extends Simulation {
       .feed(divorceUserData)
       .exec(IDAMHelper.getIdamTokenCCD)
       .exec(S2SHelper.CCDS2SToken)
-      .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
+      .repeat(10){
+        exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
+      }
     }
 
   //defines the Gatling simulation model, based on the inputs
