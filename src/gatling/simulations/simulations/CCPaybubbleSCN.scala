@@ -37,7 +37,7 @@ class CCPaybubbleSCN extends Simulation {
   val testDurationMins = 60
 
 	val numberOfPipelineUsers = 5
-	val pipelinePausesMillis: Long = 3000 //3 seconds
+	val pipelinePausesMillis:Long = 3000 //3 seconds
 
   val viewPaymentTarget:Double = 14000
   val onlinePaymentTarget:Double = 200
@@ -181,9 +181,9 @@ class CCPaybubbleSCN extends Simulation {
       .exec(ccddatastore.CCDAPI_DivorceSolicitorCreate)
     }
 
-  
   //defines the Gatling simulation model, based on the inputs
   def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
+    val userPerSecRate = userPerHourRate / 3600
     simulationType match {
       case "perftest" =>
         if (debugMode == "off") {
