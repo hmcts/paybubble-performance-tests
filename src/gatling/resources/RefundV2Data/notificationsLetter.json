@@ -1,10 +1,10 @@
 {
   "notification_type": "LETTER",
   "personalisation": {
-    "ccd_case_number": "${ccd_case_number}",
+    "ccd_case_number": "#{ccd_case_number}",
     "refund_amount": 0.10,
     "refund_reason": "RR001",
-    "refund_reference": "${refundId}"
+    "refund_reference": "#{refundId}"
   },
   "recipient_postal_address": {
     "address_line": "10 Test Street",
@@ -13,13 +13,7 @@
     "county": "Test County",
     "postal_code": "FK79JL"
   },
-  "reference": "${refundId}",
+  "reference": "#{refundId}",
   "service_name": "Civil",
   "template_id": "bc27054e-d13f-4c31-90ab-7972b88f3ff2"
 }
-
-
-
-
-
-

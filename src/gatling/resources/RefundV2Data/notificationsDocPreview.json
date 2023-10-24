@@ -1,13 +1,13 @@
 {
-  "notification_type": "${notificationType}",
-  "payment_channel": "${payment_channel}",
-  "payment_method": "${payment_method}",
-  "payment_reference": "${reference}",
+  "notification_type": "#{notificationType}",
+  "payment_channel": "#{payment_channel}",
+  "payment_method": "#{payment_method}",
+  "payment_reference": "#{reference}",
   "personalisation": {
-    "ccd_case_number": "${ccd_case_number}",
+    "ccd_case_number": "#{ccd_case_number}",
     "refund_amount": 0.10,
     "refund_reason": "RR001",
-    "refund_reference": "${refundId}"
+    "refund_reference": "#{refundId}"
   },
   "recipient_email_address": "craig.ritchie@hmcts.net",
   "recipient_postal_address": {

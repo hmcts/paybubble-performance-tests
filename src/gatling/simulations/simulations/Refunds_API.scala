@@ -67,7 +67,6 @@ class Refunds_API extends Simulation {
     case _ => disabledPauses
   }
   /* ******************************** */
-
   //  /* PIPELINE CONFIGURATION */
   //  val numberOfPipelineUsersSole:Double = 5
   //  val numberOfPipelineUsersJoint:Double = 5

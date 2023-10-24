@@ -1,5 +1,5 @@
 {
-  "ccd_case_number": "${ccd_case_number}",
+  "ccd_case_number": "#{ccd_case_number}",
   "contact_details": {
     "address_line": "10 Test Street",
     "city": "Test Town",
@@ -10,11 +10,11 @@
     "postal_code": "FK79JL",
     "template_id": ""
   },
-  "fee_ids": "${payment_link_id}",
-  "payment_amount": "${amount}",
-  "payment_channel": "${payment_channel}",
-  "payment_method": "${payment_method}",
-  "payment_reference": "${reference}",
+  "fee_ids": "#{payment_link_id}",
+  "payment_amount": "#{amount}",
+  "payment_channel": "#{payment_channel}",
+  "payment_method": "#{payment_method}",
+  "payment_reference": "#{reference}",
   "refund_amount": 0.10,
   "refund_fees": [
     {
@@ -26,5 +26,5 @@
     }
   ],
   "refund_reason": "RR001",
-  "service_type": "${service_type}"
+  "service_type": "#{service_type}"
 }

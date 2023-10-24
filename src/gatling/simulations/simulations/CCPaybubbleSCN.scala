@@ -39,12 +39,13 @@ class CCPaybubbleSCN extends Simulation {
 	val numberOfPipelineUsers = 5
 	val pipelinePausesMillis: Long = 3000 //3 seconds
 
-  val viewPaymentTarget:Double = 10
-  val onlinePaymentTarget:Double = 10
-  val bulkscanTarget:Double = 10
-  val pbaTarget:Double = 10
-  val telephonyTarget:Double = 10
-  val onlineTarget:Double = 10
+  val viewPaymentTarget:Double = 14000
+  val onlinePaymentTarget:Double = 200
+  val bulkscanTarget:Double = 1500
+  val pbaTarget:Double = 160
+  val telephonyTarget:Double = 200
+
+  val onlineTarget:Double = 200
   val ccdCreateTarget:Double = 10
 
   //Determine the pause pattern to use:

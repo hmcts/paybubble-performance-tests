@@ -56,10 +56,10 @@ object  S2SHelper {
       .header("Content-Type", "application/json")
       .body(StringBody(
         """{
-       "microservice": "payment_app"
+       "microservice": "payment_app" 
         }"""
       )).asJson
-      .check(bodyString.saveAs("s2sTokenRefund"))
+      .check(bodyString.saveAs("s2sTokenRefund")) 
       )
 
   val CCDS2SToken = 
